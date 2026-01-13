@@ -1,407 +1,384 @@
-# Roo Code Learning Materials
+# Roo-Code Learning Materials
 
-This folder contains comprehensive documentation about Roo's architecture, focusing on the transition from XML to native tool calling and the system prompt structure.
+> **Version**: Based on Roo-Code v3.39+ (January 2026)  
+> **Repository**: [Roo-Code on GitHub](https://github.com/RooVetGit/Roo-Cline)
 
-## 📚 Documentation Files
+Comprehensive learning materials for understanding Roo-Code's architecture, implementation patterns, and advanced features.
 
-### 1. [architect_mode_prompt.md](./architect_mode_prompt.md)
-**Full system prompt for Architect mode**
+---
 
-Contains the complete, reconstructed system prompt for Architect mode with:
-- Full prompt text in a markdown codeblock for easy copying
-- Source code references for each section
-- Key characteristics and workflow
-- Tool access restrictions (markdown files only)
-- Mode-specific custom instructions
+## 📚 Quick Navigation
 
-**Key Learning:**
-- Architect mode is designed for planning and design
-- Can only edit markdown files (`\.md$` pattern)
-- Focuses on creating todo lists and getting user approval before implementation
+### Start Here
+- **[00_complete_guide.md](00_complete_guide.md)** - Comprehensive guide covering all critical topics (30KB)
+- **[01_overview.md](01_overview.md)** - High-level architecture overview
 
-### 2. [code_mode_prompt.md](./code_mode_prompt.md)
-**Full system prompt for Code mode**
+### By Topic
+- **Architecture** → 01, 02, 03, 07
+- **Tool System** → 04, 08, 09, 10
+- **Message Handling** → 05, 08, 09
+- **Task Management** → 03, 10, 11
+- **Advanced Features** → 12, 13, 14, 15, 16
 
-Contains the complete, reconstructed system prompt for Code mode with:
-- Full prompt text in a markdown codeblock for easy copying
-- Source code references for each section
-- Comparison with Architect mode
-- Tool access (no restrictions)
-- Implementation-focused workflow
+---
 
-**Key Learning:**
-- Code mode is designed for implementation
-- Full access to all edit tools and command execution
-- No file restrictions - can modify any file in workspace
+## 🎯 Learning Paths
 
-### 3. [tool_definitions.md](./tool_definitions.md)
-**How tools are defined and passed with prompts**
+### Path 1: New Users (2-3 hours)
+**Goal**: Understand what Roo-Code is and how to use it effectively
 
-Comprehensive explanation of the tool system covering:
-- **The XML → Native transition** (December 2025)
-- Native tool protocol (current standard)
-- Tool definition format (OpenAI ChatCompletionTool with JSON Schema)
-- How tools are built and passed to the API
-- Tool filtering by mode
-- Backward compatibility for resumed tasks
-- OpenAI ↔ Anthropic conversion
+```
+1. Read: 01_overview.md
+   ↓ Learn: High-level architecture, what makes Roo different
+   
+2. Read: 02_mode_system.md
+   ↓ Learn: Built-in modes, when to use each
+   
+3. Read: 06_skills_system.md
+   ↓ Learn: How skills extend Roo's capabilities
+   
+4. Skim: 00_complete_guide.md
+   ↓ Reference: Deep dive when needed
+```
 
-**Key Learning:**
-- Native protocol: tools passed as separate API parameter (not in prompt)
-- XML protocol: tools embedded in system prompt (deprecated, but supported for resumed tasks)
-- Tools filtered by mode groups (read, edit, command, browser, mcp, modes)
-- Significant token savings with native protocol
+**Outcome**: Can effectively use Roo-Code modes and understand core concepts
 
-### 4. [skills_handling.md](./skills_handling.md)
-**How skills are handled in Roo**
+---
 
-Detailed explanation of the skills system:
-- Skills follow the Agent Skills specification (https://agentskills.io/)
-- Filesystem-based skill definitions (SKILL.md files)
-- Discovery from global and project directories
-- Mode-specific skills (skills-{mode}/)
-- Override resolution (project > global, mode-specific > generic)
+### Path 2: Contributors (4-6 hours)
+**Goal**: Understand codebase structure to contribute features or fixes
+
+```
+1. Read: 01_overview.md
+   ↓ Foundation: Architecture overview
+   
+2. Read: 03_task_lifecycle.md
+   ↓ Core: How tasks execute (recursivelyMakeClineRequests)
+   
+3. Read: 04_tool_system.md + 08_native_protocol.md
+   ↓ Critical: Tool validation, protocol handling
+   
+4. Read: 05_dual_history.md
+   ↓ Important: UI vs API messages (common confusion point)
+   
+5. Read: 09_message_parsing.md
+   ↓ Implementation: How malformed JSON is handled
+   
+6. Read: 13_provider_integration.md
+   ↓ Integration: How to add new LLM providers
+   
+7. Code exploration with docs as reference
+```
+
+**Outcome**: Can navigate codebase, understand core loops, make meaningful contributions
+
+---
+
+### Path 3: Researchers / Advanced Developers (6-8 hours)
+**Goal**: Deep understanding of architecture, design decisions, and implementation patterns
+
+```
+1. Read: 00_complete_guide.md (all sections)
+   ↓ Foundation: Complete mental model
+   
+2. Read in sequence: 01 → 16
+   ↓ Depth: Each topic in detail
+   
+3. Cross-reference with source code:
+   - src/core/task/Task.ts (4000 lines)
+   - src/core/tools/validateToolUse.ts
+   - src/core/assistant-message/
+   - src/core/webview/ClineProvider.ts
+   
+4. Study edge cases:
+   - Error recovery (09_message_parsing.md)
+   - Context management (12_context_management.md)
+   - Task delegation (11_todo_and_subtasks.md)
+```
+
+**Outcome**: Complete understanding, can architect similar systems or extend significantly
+
+---
+
+## 📖 Document Index
+
+### Core Architecture
+
+| Doc | Topic | Priority | Size | Key Concepts |
+|-----|-------|----------|------|--------------|
+| **00** | **Complete Guide** | ⭐ Critical | 30KB | All 4 critical requirements covered |
+| **01** | Overview | ⭐ High | 14KB | Architecture, dual-history, VSCode integration |
+| **02** | Mode System | ⭐ High | 14KB | 5 built-in modes, tool groups, custom modes |
+| **03** | Task Lifecycle | ⭐ High | 16KB | Task creation, agentic loop, state management |
+
+### Tool & Protocol System
+
+| Doc | Topic | Priority | Size | Key Concepts |
+|-----|-------|----------|------|--------------|
+| **04** | Tool System | ⭐ High | 9KB | Tool validation, execution, error recovery |
+| **08** | Native Protocol | ⭐ High | 2KB | Native vs XML, malformed JSON handling |
+| **09** | Message Parsing | Medium | 6KB | Parser implementation, error recovery |
+| **10** | Task Completion | Medium | 6KB | AttemptCompletionTool, validation |
+
+### Message & History Management
+
+| Doc | Topic | Priority | Size | Key Concepts |
+|-----|-------|----------|------|--------------|
+| **05** | Dual History | ⭐ High | 6KB | UI vs API messages, side-by-side examples |
+| **11** | Todo & Subtasks | ⭐ High | 2KB | Task delegation, parent/child relationships |
+| **12** | Context Management | Medium | 7KB | Condensation, truncation, sliding window |
+
+### Integration & Extensions
+
+| Doc | Topic | Priority | Size | Key Concepts |
+|-----|-------|----------|------|--------------|
+| **06** | Skills System | ⭐ High | 2KB | Skills discovery, mandatory checks |
+| **07** | Prompt Architecture | Medium | 4KB | System prompt assembly, dynamic generation |
+| **13** | Provider Integration | Medium | 8KB | 40+ LLM providers, ApiHandler interface |
+| **14** | VSCode Integration | Low | 9KB | ClineProvider, webview, terminals |
+| **15** | MCP Integration | Low | 8KB | MCP servers, McpHub, tool discovery |
+| **16** | Custom Modes | Low | 9KB | CustomModesManager, marketplace |
+
+---
+
+## 🔥 Critical Topics (Must Read)
+
+### 1. Skills Handling
+**Documents**: 06, 00 (Section 4)
+
+Understanding how Roo discovers, validates, and uses skills. Covers:
+- Skills discovery from `agentskills.io` spec
+- Mandatory precondition checks before execution
 - Integration with system prompt
-- Mandatory skill check workflow
-- Hot reload with file watchers
 
-**Key Learning:**
-- Skills extend agent capabilities without code changes
-- Strict validation (name format, description length)
-- Skills are lazy-loaded (listed in prompt, content loaded on-demand)
-- Agent must check for skill applicability before every response
-
-### 5. [conv_example.md](./conv_example.md)
-**Complete conversation example with real API call structures**
-
-A detailed, realistic walkthrough of a complete conversation showing:
-- Exact `client.messages.create()` API call structure with all parameters
-- User request → Model response → Tool execution → Tool result flow
-- How conversation history grows with each turn
-- Complete message format for user, assistant, and tool_result blocks
-- The iterative loop from initial request to `attempt_completion`
-- Alternative scenarios (user feedback vs approval)
-
-**Key Learning:**
-- Tools are passed as a separate `tools` parameter, not in messages
-- Each API request contains the full conversation history
-- Tool results are accumulated and become the next user message
-- The loop continues until `attempt_completion` is called and approved
-- Complete data structures for apiConversationHistory and token usage
-
-### 6. [native_protocol_and_completion.md](./native_protocol_and_completion.md)
-**Native Protocol (JSON Mode) and Task Completion Detection**
-
-In-depth explanation of how Native Protocol works and how task completion is detected:
-- **Protocol Overview**: XML Protocol vs Native Protocol comparison
-- **Native Protocol Architecture**: Stream chunks, incremental JSON parsing, ToolUse structures
-- **Task Completion Detection**: How `attempt_completion` is detected in both protocols
-- **Complete Flow Diagrams**: Visual representation from API response to task completion
-- **Code Deep Dive**: Actual implementation with line references
-
-**Key Learning:**
-- "JSON mode" is actually "Native Protocol" - structured tool calling via API
-- Task completion is protocol-agnostic (same detection for XML and Native)
-- Protocol detection: `block.id` present = native, absent = XML
-- Incremental JSON parsing with `partial-json` library enables progressive rendering
-- Native protocol reduces token usage by 2000-5000 tokens per request
-
-### 7. [error_handling_malformed_json.md](./error_handling_malformed_json.md)
-**Error Handling for Malformed JSON in Native Protocol**
-
-Comprehensive guide to how Roo handles invalid/malformed JSON from the model:
-- **Error Detection Stages**: Incremental parsing, final parsing, tool execution validation
-- **Error Handling Flow**: Complete flow from malformed JSON to error recovery
-- **Resilience Features**: Partial parsing, graceful degradation, error communication
-- **User Experience**: What users see when JSON errors occur
-- **Example Scenarios**: Missing braces, extra characters, type mismatches, random strings
-- **Code Deep Dive**: Actual error handling implementation with try-catch blocks
-
-**Key Learning:**
-- Malformed JSON never crashes the system - always handled gracefully
-- `partial-json` library extracts data from incomplete JSON during streaming
-- Errors are communicated to both user (UI) and model (tool_result)
-- Conversation continues even with JSON errors - task loop never breaks
-- Model receives clear error messages and can retry with corrected JSON
-- Multiple safety layers: parsing, validation, execution abortion
+**Why Critical**: Skills are how Roo extends capabilities. Misunderstanding causes failed tool calls.
 
 ---
 
-## 🔎 Quick Reference Guide
+### 2. Tool Validation & Malformed JSON
+**Documents**: 04, 08, 09, 00 (Section 3)
 
-### Key Concepts & Where to Find Them
+How Roo validates tool calls and recovers from malformed responses. Covers:
+- `validateToolUse` implementation
+- Native vs XML protocol differences
+- Error recovery strategies for incomplete/invalid JSON
+- Graceful degradation patterns
 
-| Concept | Document | Key Sections |
-|---------|----------|-------------|
-| **API Call Structure** | `conv_example.md` | API Request Structure, Turn 1-4 |
-| **Conversation Loop** | `conv_example.md`, `native_protocol_and_completion.md` | Complete Flow Diagram, Task Loop |
-| **Tool Call Format** | `native_protocol_and_completion.md` | Native Protocol Architecture, Tool Use Data Structure |
-| **Task Completion** | `native_protocol_and_completion.md` | Task Completion Detection, Attempt Completion Tool Execution |
-| **Native vs XML Protocol** | `tool_definitions.md`, `native_protocol_and_completion.md` | Key Differences Table, Protocol Overview |
-| **System Prompt** | `architect_mode_prompt.md`, `code_mode_prompt.md` | Full System Prompt sections |
-| **Mode Differences** | `code_mode_prompt.md` | Differences from Architect Mode table |
-| **Skills System** | `skills_handling.md` | Complete document |
-| **Tool Definitions** | `tool_definitions.md` | Native Tool Locations, Tool Definition Format |
-| **Message Format** | `conv_example.md` | Complete Data Structures, Message Count by Role |
-| **Error Handling** | `error_handling_malformed_json.md` | Error Detection Stages, Resilience Features |
-| **JSON Parsing** | `error_handling_malformed_json.md` | Incremental Parsing, Final Parsing, Error Recovery |
-
-### Common Questions Answered
-
-**Q: How does Roo detect task completion?**
-→ See `native_protocol_and_completion.md` - Task Completion Detection section
-
-**Q: What's the difference between XML and Native Protocol?**
-→ See `native_protocol_and_completion.md` - Key Differences: XML vs Native table
-
-**Q: How are tools passed to the API?**
-→ See `conv_example.md` - API Request Structure and `tool_definitions.md` - How Tools Are Passed to API
-
-**Q: How does the conversation loop work?**
-→ See `conv_example.md` - Summary of the Conversation Flow and `native_protocol_and_completion.md` - Complete Flow Diagram
-
-**Q: What tools are available in each mode?**
-→ See `architect_mode_prompt.md` and `code_mode_prompt.md` - Tool Access sections
-
-**Q: How do I create a custom skill?**
-→ See `skills_handling.md` - Example Usage: Creating a Skill section
-
-**Q: How does incremental JSON parsing work?**
-→ See `native_protocol_and_completion.md` - Incremental JSON Parsing section
-
-**Q: What happens if the model outputs malformed JSON?**
-→ See `error_handling_malformed_json.md` - Complete error handling flow and recovery mechanisms
+**Why Critical**: LLMs produce invalid JSON frequently. This system prevents task failures.
 
 ---
 
-## 🔍 Key Insights from the Codebase
+### 3. Conversation History Examples
+**Documents**: 05, 00 (Section 2)
 
-### System Prompt Assembly
+Side-by-side comparison of UI messages vs API messages. Covers:
+- Why two histories exist
+- When they diverge
+- Concrete examples showing both
+- Persistence patterns
 
-The system prompt is assembled in `src/core/prompts/system.ts:170` by the `SYSTEM_PROMPT()` function.
-
-**Prompt sections (in order):**
-1. **Role Definition** - Mode-specific role description
-2. **Markdown Formatting** - How to format responses
-3. **Tool Use** - Tool calling instructions (native vs XML)
-4. **Tool Catalog** - Only for XML protocol (deprecated)
-5. **Tool Use Guidelines** - Best practices for tool usage
-6. **MCP Servers** - If MCP tools available
-7. **Capabilities** - What the agent can do
-8. **Modes** - List of available modes
-9. **Skills** - Available skills (if any)
-10. **Rules** - Behavioral rules and constraints
-11. **System Info** - OS, shell, workspace directory
-12. **Objective** - How to accomplish tasks iteratively
-13. **Custom Instructions** - User's custom rules and mode-specific instructions
-
-### Mode Configuration
-
-Modes are defined in `packages/types/src/mode.ts:136` with:
-- `slug` - Mode identifier (e.g., "architect", "code")
-- `name` - Display name (e.g., "🏗️ Architect")
-- `roleDefinition` - Agent's role in this mode
-- `whenToUse` - Description of when to use this mode
-- `groups` - Tool groups accessible in this mode
-- `customInstructions` - Mode-specific behavioral instructions
-
-### Tool Groups
-
-From `src/shared/tools.ts`:
-
-| Group | Tools | Purpose |
-|-------|-------|---------|
-| `read` | read_file, list_files, search_files, codebase_search | Read and explore files |
-| `edit` | write_to_file, search_and_replace, apply_diff, edit_file | Modify files |
-| `command` | execute_command | Run CLI commands |
-| `browser` | browser_action | Browser automation |
-| `mcp` | MCP server tools | External tool integrations |
-| `modes` | switch_mode, new_task | Mode and task management |
+**Why Critical**: Common source of confusion. Understanding this prevents bugs in history management.
 
 ---
 
-## 🎯 Understanding the XML → Native Transition
+### 4. ToDo → Subtask Lifecycle
+**Documents**: 11, 03, 00 (Section 5)
 
-### Before (XML Protocol)
-```
-System Prompt: [Role + Instructions + TOOL DESCRIPTIONS (XML)]
-                                     ↑
-                            Increases token usage
+How tasks delegate to subtasks and manage hierarchies. Covers:
+- `new_task` tool implementation
+- Parent/child relationships
+- State propagation
+- Subtask completion handling
 
-Agent Response: <read_file><path>file.ts</path></read_file>
-                ↑
-        XML parsing required
-```
-
-### After (Native Protocol)
-```
-System Prompt: [Role + Instructions]
-                ↑
-        Reduced token usage
-
-API Request:
-{
-  messages: [...],
-  tools: [{ type: "function", function: { name: "read_file", ... } }]
-          ↑
-  Separate parameter, JSON Schema validation
-}
-
-Agent Response:
-{
-  tool_calls: [{ id: "...", type: "function", function: { name: "read_file", arguments: "{...}" } }]
-               ↑
-      Structured, typed response
-}
-```
-
-**Benefits of Native Protocol:**
-- ✅ Reduced token usage (tool descriptions not in every prompt)
-- ✅ Better type safety (JSON Schema validation)
-- ✅ Native provider support (Claude, GPT-4, etc.)
-- ✅ Cleaner parsing (no XML parsing required)
-- ✅ Faster processing
+**Why Critical**: Task delegation is core to agentic behavior. Understanding lifecycle prevents deadlocks.
 
 ---
 
-## 📖 How to Use This Documentation
+## 🗂️ Old Materials (Legacy Reference)
 
-### Recommended Reading Order
+The following documents are preserved from previous organization:
 
-#### For Understanding System Architecture:
-1. **Start with conversation flow** - Read `conv_example.md` to see a complete end-to-end example of how conversations work with actual API calls
-2. **Understand protocols** - Read `native_protocol_and_completion.md` to learn how Native Protocol works and how task completion is detected
-3. **Learn error handling** - Read `error_handling_malformed_json.md` to understand how Roo handles malformed JSON gracefully
-4. **Learn tool definitions** - Read `tool_definitions.md` to see how tools are defined, passed to the API, and filtered by mode
+| File | Content | Use Case |
+|------|---------|----------|
+| `architect_mode_prompt.md` | Architect mode system prompt | Reference for prompt engineering |
+| `code_mode_prompt.md` | Code mode system prompt | Reference for prompt engineering |
+| `conv_example.md` | Conversation flow example | Real-world conversation analysis |
+| `error_handling_malformed_json.md` | Detailed error handling | Deep dive on JSON recovery |
+| `native_protocol_and_completion.md` | Protocol details | Legacy protocol documentation |
+| `skills_handling.md` | Skills implementation | Detailed skills exploration |
+| `tool_definitions.md` | Tool schemas | Reference for all tool definitions |
+| `tool_validation_system.md` | Validation deep dive | Comprehensive validation analysis |
 
-#### For Understanding Modes:
-5. **Explore mode prompts** - Read `architect_mode_prompt.md` and `code_mode_prompt.md` to understand the full system prompts and mode-specific behaviors
-6. **Learn about skills** - Read `skills_handling.md` to understand the extensibility system and how to create custom skills
-
-#### For Implementation:
-7. **Cross-reference with source code** - Each document includes file references (e.g., `src/core/prompts/system.ts:170`) to the actual source code
-8. **Trace the flow** - Use the flow diagrams in `native_protocol_and_completion.md` and `error_handling_malformed_json.md` to understand execution paths
-
----
-
-## 🔗 Source Code References
-
-### Key Files
-- `packages/types/src/mode.ts` - Mode definitions (DEFAULT_MODES)
-- `src/core/prompts/system.ts` - System prompt assembly
-- `src/core/prompts/sections/*.ts` - Prompt section generators
-- `src/core/prompts/tools/native-tools/*.ts` - Native tool definitions
-- `src/core/task/build-tools.ts` - Tool array building and filtering
-- `src/services/skills/SkillsManager.ts` - Skills discovery and management
-- `src/utils/resolveToolProtocol.ts` - Protocol resolution (XML vs Native)
-
-### Architecture
-```
-System Prompt Generation Flow:
-├── Mode Selection (getModeBySlug)
-├── Prompt Component Override (custom mode prompts)
-├── Section Assembly
-│   ├── Role Definition (from mode config)
-│   ├── Markdown Formatting
-│   ├── Tool Use Instructions
-│   ├── Capabilities
-│   ├── Modes List
-│   ├── Skills (if any)
-│   ├── Rules
-│   ├── System Info
-│   ├── Objective
-│   └── Custom Instructions
-└── Tool Building (for native protocol)
-    ├── Native Tools (from getNativeTools)
-    ├── MCP Tools (from getMcpServerTools)
-    ├── Filter by Mode
-    └── Custom Tools (if enabled)
-```
+**Note**: These are supplementary. Start with the new organized materials (00-16).
 
 ---
 
-## 💡 Tips for Further Learning
+## 🔍 Common Questions
 
-1. **Follow a conversation** - Start with `conv_example.md` to see a realistic conversation from start to finish, then trace the same flow in the actual codebase
+### Q: Where do I start?
+**A**: Read `01_overview.md` first, then `00_complete_guide.md` for depth.
 
-2. **Understand the loop** - Use the flow diagrams in `native_protocol_and_completion.md` to visualize how the conversation loop works
+### Q: How is Roo different from other AI coding assistants?
+**A**: See `01_overview.md` - Key differences:
+- Task-based (not session-based)
+- Dual history (UI + API messages)
+- Mode system with tool permissions
+- Native tool calling protocol
+- Skills system for extensibility
 
-3. **Learn error handling** - Read `error_handling_malformed_json.md` to see how Roo gracefully handles errors and recovers from malformed JSON
+### Q: Where is the main task execution logic?
+**A**: `src/core/task/Task.ts` (~4000 lines). See `03_task_lifecycle.md` for explanation.
 
-4. **Trace the code** - Follow the file references in each document to see the actual implementation (e.g., `src/core/task/Task.ts:2239` for the task loop)
+### Q: How does Roo handle errors from LLMs?
+**A**: See `09_message_parsing.md` for malformed JSON recovery, `04_tool_system.md` for validation.
 
-5. **Experiment with modes** - Try switching between modes to see different tool access and behaviors in action
+### Q: Can I add custom tools?
+**A**: Yes, via MCP servers. See `15_mcp_integration.md`.
 
-6. **Create custom skills** - Practice creating skills in `~/.roo/skills/` to extend functionality (see `skills_handling.md` for details)
+### Q: Can I create custom modes?
+**A**: Yes. See `16_custom_modes_and_marketplace.md`.
 
-7. **Compare prompts** - Diff the architect and code mode prompts to understand how modes differ in behavior and tool access
+### Q: What's the difference between UI and API messages?
+**A**: See `05_dual_history.md` - UI messages are user-facing, API messages go to LLM.
 
-8. **Debug with logs** - Add console.log statements to `NativeToolCallParser`, `presentAssistantMessage`, and tool handlers to see the data flow in real-time
-
-9. **Read the Agent Skills spec** - Visit https://agentskills.io/ to understand the skills standard that Roo implements
-
----
-
-## 📊 Documentation Overview
-
-This learning material collection provides:
-- **7 comprehensive documents** covering system architecture, protocols, modes, tools, and error handling
-- **Complete code examples** with actual API call structures
-- **Flow diagrams** showing execution paths
-- **Source code references** with file paths and line numbers
-- **Practical examples** of conversations, tool calls, task completion, and error recovery
-
-### Documentation Map
-
-```
-Roo Code Architecture Learning Materials
-│
-├─── 🎯 Getting Started (Read First)
-│    ├── conv_example.md ...................... See a complete conversation in action
-│    └── native_protocol_and_completion.md .... Understand how the system works
-│
-├─── 🔧 Core Concepts
-│    ├── tool_definitions.md .................. How tools are defined and passed
-│    ├── error_handling_malformed_json.md ..... Resilience and error recovery
-│    └── skills_handling.md ................... Extensibility via skills
-│
-├─── 🎭 Modes & Prompts
-│    ├── architect_mode_prompt.md ............. Planning mode (restricted edit)
-│    └── code_mode_prompt.md .................. Implementation mode (full access)
-│
-└─── 📖 This README ............................ Quick reference and navigation
-
-Relationship Flow:
-conv_example.md → Shows what you see in practice
-        ↓
-native_protocol_and_completion.md → Explains how it works internally
-        ↓
-error_handling_malformed_json.md → What happens when things go wrong
-        ↓
-tool_definitions.md → Details on tool system architecture
-        ↓
-architect/code_mode_prompt.md → Mode-specific behaviors
-        ↓
-skills_handling.md → How to extend Roo with custom capabilities
-```
-
-### Document Statistics
-
-| Document | Lines | Topics Covered | Complexity |
-|----------|-------|----------------|------------|
-| `conv_example.md` | ~650 | API calls, conversation flow, tool execution | ⭐⭐ Intermediate |
-| `native_protocol_and_completion.md` | ~1350 | Protocols, parsers, completion detection | ⭐⭐⭐ Advanced |
-| `error_handling_malformed_json.md` | ~1150 | Error detection, resilience, recovery | ⭐⭐⭐ Advanced |
-| `tool_definitions.md` | ~350 | Tool system, protocols, conversions | ⭐⭐⭐ Advanced |
-| `skills_handling.md` | ~520 | Skills system, discovery, validation | ⭐⭐ Intermediate |
-| `architect_mode_prompt.md` | ~180 | Architect mode, planning workflow | ⭐ Beginner |
-| `code_mode_prompt.md` | ~175 | Code mode, implementation workflow | ⭐ Beginner |
-
-**Total:** ~4,375 lines of comprehensive documentation
+### Q: How do I contribute?
+**A**: Follow "Path 2: Contributors" learning path, then check Roo-Code's CONTRIBUTING.md.
 
 ---
 
-**Documentation Generated:** January 7, 2026
-**Latest Update:** Added conversation examples and native protocol deep dive
-**Roo Version:** Based on commit 861139ca2 and recent changes
-**Contributors:** Created through deep codebase analysis and exploration
+## 🛠️ Source Code Reference
+
+### Core Files (Must Know)
+
+| File | Lines | Purpose | Doc Reference |
+|------|-------|---------|---------------|
+| `src/core/task/Task.ts` | ~4000 | Main task orchestrator | 03, 00 |
+| `src/core/tools/validateToolUse.ts` | ~500 | Tool validation | 04, 00 |
+| `src/core/assistant-message/NativeToolCallParser.ts` | ~300 | Protocol parsing | 08, 09 |
+| `src/core/webview/ClineProvider.ts` | ~3000 | VSCode integration | 14 |
+| `src/services/skills/SkillsManager.ts` | ~400 | Skills management | 06 |
+
+### Supporting Files
+
+| File | Purpose | Doc Reference |
+|------|---------|---------------|
+| `packages/types/src/mode.ts` | Mode definitions | 02 |
+| `src/api/ApiHandler.ts` | Provider interface | 13 |
+| `src/services/mcp/McpHub.ts` | MCP integration | 15 |
+| `src/services/modes/CustomModesManager.ts` | Custom modes | 16 |
+
+---
+
+## 📝 Document Conventions
+
+All documents follow these conventions:
+
+### Structure
+```markdown
+# NN: Topic Name
+
+## Overview
+- What it is
+- Why it matters
+- Key file references
+
+## Key Concepts
+- Concept explanations
+
+## Code Examples
+- Practical implementations
+
+## Source Code References
+- Related files and purposes
+
+**Version**: Roo-Code v3.39+ (January 2026)
+```
+
+### Code Examples
+- All code is TypeScript (Roo's implementation language)
+- Examples are simplified for clarity (not production code)
+- File paths reference actual source code locations
+
+### Cross-References
+- `→` indicates "see also"
+- Documents reference each other by number (e.g., "see 03_task_lifecycle.md")
+
+---
+
+## 🎓 Learning Tips
+
+### For Visual Learners
+1. Start with architecture diagrams in `01_overview.md`
+2. Trace execution flow in `03_task_lifecycle.md`
+3. Compare side-by-side examples in `05_dual_history.md`
+
+### For Code-First Learners
+1. Clone Roo-Code repository
+2. Open `src/core/task/Task.ts` in your editor
+3. Read `03_task_lifecycle.md` alongside code
+4. Use docs as explanation reference
+
+### For Concept-First Learners
+1. Read `00_complete_guide.md` cover-to-cover
+2. Build mental model before diving into code
+3. Use source code to validate understanding
+
+---
+
+## 🚀 Next Steps
+
+After completing these materials:
+
+1. **Hands-On Practice**
+   - Install Roo-Code in VSCode
+   - Try different modes on real projects
+   - Observe UI vs API messages in debug mode
+
+2. **Code Exploration**
+   - Clone repository
+   - Set up development environment
+   - Add debug logging to understand execution flow
+
+3. **Contribution**
+   - Check [Roo-Code Issues](https://github.com/RooVetGit/Roo-Cline/issues)
+   - Start with "good first issue" labels
+   - Reference these docs when working with codebase
+
+4. **Research**
+   - Compare Roo's architecture to other AI coding assistants
+   - Study trade-offs in design decisions
+   - Experiment with custom modes and MCP servers
+
+---
+
+## 📅 Document Version
+
+- **Created**: January 2026
+- **Based on**: Roo-Code v3.39+
+- **Last Updated**: January 13, 2026
+- **Codebase Reference**: `github_repos/Roo-Code/` (main branch)
+
+---
+
+## 🤝 Contributing to These Docs
+
+Found an error or want to improve these materials?
+
+1. These docs live in `public_note/roocode_learning/`
+2. Follow the same structure and conventions
+3. Reference actual source code (verify file paths exist)
+4. Include version information
+
+---
+
+## 📞 Resources
+
+- **Official Repo**: https://github.com/RooVetGit/Roo-Cline
+- **VSCode Marketplace**: Search "Roo Cline" in extensions
+- **Community**: Check GitHub Discussions for Q&A
+
+---
+
+**Happy Learning! 🎉**
+
+*These materials are designed to make Roo-Code's architecture accessible to everyone from casual users to core contributors.*
