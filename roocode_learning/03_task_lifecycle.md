@@ -16,6 +16,57 @@ In Roo-Code, a **Task** is the fundamental unit of an AI conversation. Unlike "s
 
 ---
 
+## Task Lifecycle Visualization
+
+###  High-Level Overview
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        TASK LIFECYCLE                            │
+└─────────────────────────────────────────────────────────────────┘
+
+ [User Input]              [Task History]           [Delegation]
+      │                          │                        │
+      ▼                          ▼                        ▼
+┌──────────────┐          ┌──────────────┐       ┌──────────────┐
+│  New Task    │          │Resume Task   │       │ Child Task   │
+│  Creation    │          │ from Disk    │       │  Creation    │
+└──────┬───────┘          └──────┬───────┘       └──────┬───────┘
+       │                         │                       │
+       └─────────────────┬───────┴───────────────────────┘
+                         ▼
+                 ┌───────────────┐
+                 │ CONSTRUCTOR   │  ← Initialize identifiers,
+                 │  (sync)       │    mode, protocol, histories
+                 └───────┬───────┘
+                         ▼
+                 ┌───────────────┐
+                 │  ASYNC INIT   │  ← Load mode, fetch settings
+                 │               │    initialize services
+                 └───────┬───────┘
+                         ▼
+              ┌────────────────────┐
+              │ AGENTIC LOOP START │
+              │ recursivelyMake    │
+              │ ClineRequests()    │
+              └──────────┬─────────┘
+                         │
+         ┌───────────────┼───────────────┐
+         ▼               ▼               ▼
+    ┌────────┐     ┌─────────┐    ┌──────────┐
+    │ Active │────▶│ Paused  │    │ Aborted  │
+    │        │     │         │    │          │
+    └────┬───┘     └────┬────┘    └──────────┘
+         │              │
+         ▼              │
+    ┌────────┐          │
+    │Complete│◀─────────┘
+    │        │
+    └────────┘
+```
+
+---
+
 ## Task Creation
 
 ### Three Ways to Create a Task
@@ -24,6 +75,7 @@ In Roo-Code, a **Task** is the fundamental unit of an AI conversation. Unlike "s
 
 ```typescript
 // In ClineProvider.ts
+// This creates a brand new task from user input
 async createTask(options: CreateTaskOptions) {
   const task = new Task({
     provider: this,
@@ -157,11 +209,215 @@ await task.waitForModeInitialization()
 
 ## The Agentic Loop
 
+### Execution Flow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│           recursivelyMakeClineRequests() - The Core Loop            │
+└─────────────────────────────────────────────────────────────────────┘
+
+  while (true) {
+    
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                        PHASE 1: PREPARATION                      │
+    └─────────────────────────────────────────────────────────────────┘
+    
+         Check abort/pause flags
+                  │
+                  ▼
+         ┌────────────────┐
+         │   Aborted?     │──YES──▶ return (exit loop)
+         └────────┬───────┘
+                  │ NO
+                  ▼
+         ┌────────────────┐
+         │   Paused?      │──YES──▶ return (wait for resume)
+         └────────┬───────┘
+                  │ NO
+                  ▼
+         ┌────────────────┐
+         │  Pending Ask?  │──YES──▶ await user response ──┐
+         └────────┬───────┘                                 │
+                  │ NO                                      │
+                  │◀────────────────────────────────────────┘
+                  │
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                    PHASE 2: BUILD API REQUEST                    │
+    └─────────────────────────────────────────────────────────────────┘
+                  │
+                  ▼
+         ┌────────────────────┐
+         │ Get system prompt  │  ← Mode-specific, assembled dynamically
+         └────────┬───────────┘
+                  ▼
+         ┌────────────────────┐
+         │  Get API history   │  ← Context-managed (condensed if needed)
+         └────────┬───────────┘
+                  ▼
+         ┌────────────────────┐
+         │  Build tools array │  ← Mode-specific available tools
+         └────────┬───────────┘
+                  │
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                   PHASE 3: STREAM LLM RESPONSE                   │
+    └─────────────────────────────────────────────────────────────────┘
+                  │
+                  ▼
+         ┌────────────────────┐
+         │ api.createMessage()│──▶ HTTP request to LLM provider
+         └────────┬───────────┘
+                  │
+                  ▼
+         ┌────────────────────┐
+         │  Start streaming   │
+         └────────┬───────────┘
+                  │
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                  PHASE 4: PARSE STREAMING CHUNKS                 │
+    └─────────────────────────────────────────────────────────────────┘
+                  │
+                  ▼
+       ┌──────────────────────────┐
+       │  for await (chunk) {     │
+       │                          │
+       │   ┌──────────────────┐   │
+       │   │ chunk.type =     │   │
+       │   │  'text'?         │───┼─YES─▶ Accumulate text, update UI
+       │   └───────┬──────────┘   │
+       │           │ NO            │
+       │           ▼               │
+       │   ┌──────────────────┐   │
+       │   │ 'tool_call       │   │
+       │   │  _start'?        │───┼─YES─▶ Create new tool call object
+       │   └───────┬──────────┘   │
+       │           │ NO            │
+       │           ▼               │
+       │   ┌──────────────────┐   │
+       │   │ 'tool_call       │   │
+       │   │  _delta'?        │───┼─YES─▶ Append to arguments, try partial parse
+       │   └───────┬──────────┘   │
+       │           │ NO            │
+       │           ▼               │
+       │   ┌──────────────────┐   │
+       │   │ 'tool_call       │   │
+       │   │  _end'?          │───┼─YES─▶ Finalize tool call, parse JSON
+       │   └───────┬──────────┘   │
+       │           │ NO            │
+       │           ▼               │
+       │   ┌──────────────────┐   │
+       │   │ 'usage'?         │───┼─YES─▶ Update token metrics
+       │   └──────────────────┘   │
+       │                          │
+       │  }                       │
+       └──────────┬───────────────┘
+                  │
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                   PHASE 5: EXECUTE TOOL CALLS                    │
+    └─────────────────────────────────────────────────────────────────┘
+                  │
+                  ▼
+       for each tool call:
+                  │
+                  ▼
+         ┌────────────────────┐
+         │  Validate tool     │──INVALID──▶ Add error to results ──┐
+         │  (validateToolUse) │                                     │
+         └────────┬───────────┘                                     │
+                  │ VALID                                           │
+                  ▼                                                 │
+         ┌────────────────────┐                                     │
+         │ Check repetition   │──REPEATING─▶ Add error to results ─┤
+         └────────┬───────────┘                                     │
+                  │ OK                                              │
+                  ▼                                                 │
+         ┌────────────────────┐                                     │
+         │ Needs approval?    │──YES──▶ ask() user ──REJECT──▶ ────┤
+         └────────┬───────────┘              │                      │
+                  │ NO/APPROVED               │ APPROVE             │
+                  │◀──────────────────────────┘                     │
+                  ▼                                                 │
+         ┌────────────────────┐                                     │
+         │  Execute tool      │                                     │
+         └────────┬───────────┘                                     │
+                  │                                                 │
+                  ▼                                                 │
+         ┌────────────────────┐                                     │
+         │ Add result to list │◀────────────────────────────────────┘
+         └────────┬───────────┘
+                  │
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                    PHASE 6: HANDLE COMPLETION                    │
+    └─────────────────────────────────────────────────────────────────┘
+                  │
+                  ▼
+         ┌─────────────────────┐
+         │ attempt_completion  │
+         │  tool present?      │──NO──▶ Skip to Phase 7
+         └────────┬────────────┘
+                  │ YES
+                  ▼
+         ┌─────────────────────┐
+         │  Validate can       │──INVALID──▶ Add error, continue
+         │   complete          │
+         └────────┬────────────┘
+                  │ VALID
+                  ▼
+         ┌─────────────────────┐
+         │  Ask user approval  │──REJECT──▶ Add feedback, continue
+         └────────┬────────────┘
+                  │ APPROVE
+                  ▼
+         ┌─────────────────────┐
+         │  Set status =       │
+         │   'completed'       │
+         └────────┬────────────┘
+                  │
+                  ▼
+         return (exit loop) ──▶ TASK DONE ✓
+         
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                PHASE 7: ADD TO HISTORY & RECURSE                 │
+    └─────────────────────────────────────────────────────────────────┘
+                  │
+                  ▼
+         ┌─────────────────────┐
+         │  Add assistant msg  │  (text + tool_use blocks)
+         │  to API history     │
+         └────────┬────────────┘
+                  ▼
+         ┌─────────────────────┐
+         │  Add tool results   │  (user role message)
+         │  to API history     │
+         └────────┬────────────┘
+                  ▼
+         ┌─────────────────────┐
+         │  Save histories     │  (write to disk)
+         │  to disk            │
+         └────────┬────────────┘
+                  │
+                  │
+                  └──────────▶ LOOP CONTINUES (back to top)
+                  
+  } // End while loop
+```
+
+### Key Points About the Loop
+
+- **Infinite loop by design** - Only exits on completion, abort, or pause
+- **Streaming real-time** - User sees text as it's generated
+- **Approval gates** - Tools can require user confirmation before execution
+- **Error resilient** - Failed tools don't stop the loop, they add error results
+- **History accumulates** - Each turn adds to conversation context
+- **Disk persistence** - State saved after each turn
+
+---
+
 ### Core Method: `recursivelyMakeClineRequests()`
 
 This is the **heart** of Roo-Code's AI execution:
 
 ```typescript
+// The main agentic loop that powers Roo-Code
 async recursivelyMakeClineRequests(): Promise<void> {
   while (true) {
     // ========================================
@@ -410,19 +666,79 @@ class Task {
 ### State Transitions
 
 ```
-Created → Initialized → Active → [Paused] → Completed
-                  ↓                    ↓
-                Aborted            Abandoned
+                  ┌─────────────────────────────────┐
+                  │        TASK STATES              │
+                  └─────────────────────────────────┘
+
+   [User creates task]
+            │
+            ▼
+      ┌──────────┐
+      │ CREATED  │  ← Constructor finished, identifiers set
+      └────┬─────┘
+           │
+           │ async init completes
+           ▼
+   ┌────────────────┐
+   │  INITIALIZED   │  ← Mode loaded, services ready
+   └───────┬────────┘
+           │
+           │ initiateTaskLoop() called
+           ▼
+      ┌──────────┐
+      │  ACTIVE  │◀─────────┐
+      │          │          │
+      │ (Loop    │          │ User resumes
+      │  running)│          │
+      └────┬─────┘          │
+           │                │
+           ├─────────────┐  │
+           │             │  │
+           │             ▼  │
+           │        ┌─────────┐
+           │        │ PAUSED  │
+           │        │         │
+           │        │ (Child  │
+           │        │  task   │
+           │        │  active)│
+           │        └─────────┘
+           │
+           ├──────[User clicks abort]
+           │             │
+           │             ▼
+           │        ┌─────────┐
+           │        │ ABORTED │  ← User cancelled
+           │        │         │
+           │        └─────────┘
+           │
+           ├──────[User closes without completion]
+           │             │
+           │             ▼
+           │        ┌───────────┐
+           │        │ ABANDONED │  ← Task closed incomplete
+           │        │           │
+           │        └───────────┘
+           │
+           └──────[attempt_completion approved]
+                       │
+                       ▼
+                  ┌───────────┐
+                  │ COMPLETED │  ← Task successfully finished ✓
+                  │           │
+                  └───────────┘
 ```
 
-**States**:
-- **Created**: Constructor finished
-- **Initialized**: `isInitialized = true` after first API call setup
-- **Active**: Loop running, making API requests
-- **Paused**: `isPaused = true` (child task running, or user pause)
-- **Completed**: `status = 'completed'`, `attempt_completion` approved
-- **Aborted**: `abort = true`, user cancelled
-- **Abandoned**: Task closed without completion
+**State Details**:
+
+| State | Triggered By | Properties Set | What Happens Next |
+|-------|-------------|----------------|-------------------|
+| **Created** | `new Task()` | `taskId`, `instanceId` | Async initialization |
+| **Initialized** | `initializeTaskMode()` completes | `isInitialized = true` | Ready to start loop |
+| **Active** | `initiateTaskLoop()` | Loop running | Making API requests |
+| **Paused** | Child task starts OR user pause | `isPaused = true` | Loop returns, waits |
+| **Completed** | `attempt_completion` approved | `status = 'completed'` | Cleanup, notify parent |
+| **Aborted** | User cancels | `abort = true` | Loop exits, cleanup |
+| **Abandoned** | UI closed without completion | `abandoned = true` | Resources released |
 
 ---
 
@@ -506,13 +822,53 @@ public dispose(): void {
 
 ## Task Persistence
 
+### Task Data Flow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     TASK DATA PERSISTENCE                        │
+└─────────────────────────────────────────────────────────────────┘
+
+    MEMORY (Runtime)                    DISK (Persistent)
+    
+┌──────────────────────┐         ┌──────────────────────────┐
+│  Task Instance       │         │  ~/.roo/tasks/           │
+│                      │         │    task_{taskId}/        │
+│  ┌────────────────┐  │         │                          │
+│  │ API History    │──┼─save──▶│  api_conversation_       │
+│  │ (for LLM)      │  │         │    history.json          │
+│  └────────────────┘  │         │                          │
+│                      │         │  [{ role: "user",        │
+│  ┌────────────────┐  │         │     content: "..." },    │
+│  │ UI Messages    │──┼─save──▶│   { role: "assistant",   │
+│  │ (for display)  │  │         │     content: [...] }]    │
+│  └────────────────┘  │         │                          │
+│                      │         │  ┌─────────────────────┐ │
+│  ┌────────────────┐  │         │  │ ui_messages.json    │ │
+│  │ Task Metadata  │──┼─save──▶│  │                     │ │
+│  │ (mode, status) │  │         │  │ [{ type: "say",     │ │
+│  └────────────────┘  │         │  │    say: "text",     │ │
+│                      │         │  │    text: "..." }]   │ │
+│                      │         │  └─────────────────────┘ │
+└──────────────────────┘         │                          │
+                                 │  task_metadata.json      │
+         ▲                       │  { mode: "code",         │
+         │                       │    status: "active",     │
+         │ load on resume        │    toolProtocol: "..." }│
+         │                       └──────────────────────────┘
+         │
+    [Task resumed]
+         │
+         └─────────────── Task reconstructed from disk
+```
+
 ### Files on Disk
 
 ```
 ~/.roo/tasks/task_{taskId}/
-├── api_conversation_history.json  # LLM context
-├── ui_messages.json                # UI display
-└── task_metadata.json              # Mode, status, etc.
+├── api_conversation_history.json  # LLM context (what assistant sees)
+├── ui_messages.json                # UI display messages (what user sees)
+└── task_metadata.json              # Mode, status, protocol settings
 ```
 
 ### Saving
