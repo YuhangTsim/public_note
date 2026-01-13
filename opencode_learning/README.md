@@ -82,33 +82,62 @@ This directory contains comprehensive documentation on OpenCode's architecture a
     - Oh-My-OpenCode mandatory completion enforcement
     - TODO lifecycle and workflow examples
 
+### Implementation Deep Dives
+
+11. **[11_tool_calling_system.md](./11_tool_calling_system.md)** - Tool calling architecture
+    - Zod schema definitions
+    - Vercel AI SDK integration
+    - Tool execution pipeline
+    - Type-safe tool development
+
+12. **[12_conversation_history.md](./12_conversation_history.md)** - Conversation flow
+    - Message formats and structure
+    - History management
+    - Context window handling
+    - Message compaction
+
+13. **[13_direct_api_calls.md](./13_direct_api_calls.md)** - Direct API examples
+    - Raw Python SDK examples
+    - OpenAI, Anthropic, Gemini integration
+    - Manual tool calling patterns
+
+14. **[14_subagent_system.md](./14_subagent_system.md)** - Subagent orchestration
+    - Task tool implementation
+    - Parent-child session architecture
+    - Permission isolation model
+    - Built-in subagents (explore, oracle, librarian, general)
+    - Stateful vs stateless execution
+    - Real-time progress streaming
+    - Result format and error handling
+    - Oh-My-OpenCode parallel patterns
+
 ### Additional Topics (Coming Soon)
 
-11. **11_provider_layer.md** - LLM provider abstraction
+15. **15_provider_layer.md** - LLM provider abstraction
     - Provider architecture
     - Supported providers (15+)
     - Model selection and configuration
     - Authentication patterns
 
-12. **12_client_server.md** - Client/server communication
+16. **16_client_server.md** - Client/server communication
     - HTTP API (Hono server)
     - SDK generation
     - WebSocket streaming
     - Multiple client types (CLI, TUI, Web, Desktop)
 
-13. **13_tui_architecture.md** - Terminal UI implementation
+17. **17_tui_architecture.md** - Terminal UI implementation
     - SolidJS + OpenTUI architecture
     - Rendering strategy
     - State management
     - Terminal capabilities
 
-14. **14_lsp_integration.md** - Language Server Protocol
+18. **18_lsp_integration.md** - Language Server Protocol
     - LSP client implementation
     - Supported operations
     - Multi-language support
     - Type-safe refactoring
 
-15. **15_plugin_system.md** - Plugin architecture
+19. **19_plugin_system.md** - Plugin architecture
     - Plugin API
     - Custom tool development
     - Custom agent creation
