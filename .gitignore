@@ -1,4 +1,4 @@
 # Ignore all files in the github_repos directory except for the report.md
-github_repos/*
+# github_repos/*
 !github_repos/*.sh
 !github_repos/*.md
