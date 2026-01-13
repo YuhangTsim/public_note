@@ -111,33 +111,41 @@ This directory contains comprehensive documentation on OpenCode's architecture a
     - Result format and error handling
     - Oh-My-OpenCode parallel patterns
 
+15. **[15_modes_and_agents.md](./15_modes_and_agents.md)** - Modes and agent roles explained
+    - Agent modes (primary/subagent/all classification)
+    - Built-in agents as "modes" (build, plan, explore, general)
+    - UI input modes (shell vs normal)
+    - Theme modes (dark/light)
+    - Configuration differences and migration
+    - Custom mode creation patterns
+
 ### Additional Topics (Coming Soon)
 
-15. **15_provider_layer.md** - LLM provider abstraction
+16. **16_provider_layer.md** - LLM provider abstraction
     - Provider architecture
     - Supported providers (15+)
     - Model selection and configuration
     - Authentication patterns
 
-16. **16_client_server.md** - Client/server communication
+17. **17_client_server.md** - Client/server communication
     - HTTP API (Hono server)
     - SDK generation
     - WebSocket streaming
     - Multiple client types (CLI, TUI, Web, Desktop)
 
-17. **17_tui_architecture.md** - Terminal UI implementation
+18. **18_tui_architecture.md** - Terminal UI implementation
     - SolidJS + OpenTUI architecture
     - Rendering strategy
     - State management
     - Terminal capabilities
 
-18. **18_lsp_integration.md** - Language Server Protocol
+19. **19_lsp_integration.md** - Language Server Protocol
     - LSP client implementation
     - Supported operations
     - Multi-language support
     - Type-safe refactoring
 
-19. **19_plugin_system.md** - Plugin architecture
+20. **20_plugin_system.md** - Plugin architecture
     - Plugin API
     - Custom tool development
     - Custom agent creation
@@ -167,7 +175,7 @@ Start with:
 
 1. [04_tool_system.md](./04_tool_system.md) - Custom tools
 2. [05_mcp_integration.md](./05_mcp_integration.md) - MCP servers
-3. [11_plugin_system.md](./11_plugin_system.md) - Plugin API (coming soon)
+3. [20_plugin_system.md](./20_plugin_system.md) - Plugin API (coming soon)
 
 ### For Advanced Users
 
