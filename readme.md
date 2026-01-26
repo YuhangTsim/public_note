@@ -50,6 +50,29 @@ In-depth analysis of **Roo Code** (VS Code extension) architecture, with focus o
 
 See [roocode_learning/README.md](./roocode_learning/README.md) for detailed documentation map.
 
+### [clawdbot_learning/](./clawdbot_learning/)
+Comprehensive documentation for **Clawdbot** - a personal AI assistant platform with multi-channel support, gateway-based architecture, and extensive security controls.
+
+**Topics covered:**
+- Gateway architecture and WebSocket control plane
+- Multi-channel support (WhatsApp, Telegram, Discord, Slack, iMessage, Signal)
+- Workspace files (SOUL.md, AGENTS.md, WORKSPACE.md)
+- Tool system with approval and sandbox isolation
+- Skills discovery, installation, and eligibility
+- DM pairing and access control systems
+- Security audit and compliance tools
+- Agent run lifecycle and task completion detection
+
+**Key documents:**
+- [01_overview.md](./clawdbot_learning/01_overview.md) - Architecture and tech stack
+- [02_prompt_system.md](./clawdbot_learning/02_prompt_system.md) - Workspace files and prompt engineering
+- [03_tool_system.md](./clawdbot_learning/03_tool_system.md) - Tool execution and approvals
+- [04_skills_system.md](./clawdbot_learning/04_skills_system.md) - Skills discovery and installation
+- [05_access_control.md](./clawdbot_learning/05_access_control.md) - DM pairing, allowlists, security audit
+- [06_task_completion.md](./clawdbot_learning/06_task_completion.md) - Agent run lifecycle and session management
+
+See [clawdbot_learning/README.md](./clawdbot_learning/README.md) for complete documentation index.
+
 ### [coding_agent_research/](./coding_agent_research/)
 Research on context selection and management methodologies in open-source coding agents.
 
@@ -77,6 +100,7 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 - **Primary agents** (user-facing): build, plan
 - **Specialized subagents**: explore (contextual grep), oracle (expert advisor), librarian (reference search)
 - **Agent orchestration**: Parallel execution, delegation patterns, background tasks
+- **Gateway-based architecture** (Clawdbot): WebSocket control plane, multi-channel routing
 
 ### Protocol Evolution
 - **XML Protocol**: Tools embedded in system prompt (deprecated)
@@ -88,18 +112,28 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 - Snapshot and diff systems
 - Message compaction strategies
 - Tool permission systems
+- Workspace files (SOUL.md, AGENTS.md, WORKSPACE.md)
 
 ### Prompt Engineering
 - Multi-layer prompt assembly
 - Provider-specific optimizations
 - Dynamic context injection
 - Mode-specific behaviors (Architect vs Code)
+- Personality configuration via workspace files
+
+### Security & Access Control
+- **DM Pairing**: Ephemeral codes for user authentication
+- **Allowlist Matching**: Platform-specific identifier matching
+- **Exec Approvals**: Bash command approval system (~/.clawdbot/exec-approvals.json)
+- **Sandbox Policies**: Tool allow/deny lists for isolated execution
+- **Security Audit**: Automated vulnerability scanning
 
 ### Task Completion
 - LLM finish reason detection (stop, tool-calls, length, error)
 - Streaming architecture and event processing
 - TODO continuation enforcement
 - Decision logic (continue vs stop vs compact)
+- Agent run lifecycle management
 
 ## 🚀 Getting Started
 
@@ -113,6 +147,11 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 2. Read [roocode_learning/native_protocol_and_completion.md](./roocode_learning/native_protocol_and_completion.md) for protocol details
 3. Explore mode prompts: [architect_mode_prompt.md](./roocode_learning/architect_mode_prompt.md) and [code_mode_prompt.md](./roocode_learning/code_mode_prompt.md)
 
+### For Understanding Clawdbot:
+1. Read [clawdbot_learning/01_overview.md](./clawdbot_learning/01_overview.md) for architecture overview
+2. Explore [clawdbot_learning/02_prompt_system.md](./clawdbot_learning/02_prompt_system.md) for workspace file configuration
+3. Review [clawdbot_learning/05_access_control.md](./clawdbot_learning/05_access_control.md) for security setup
+
 ### For Comparative Research:
 1. Review [coding_agent_research/](./coding_agent_research/) for context management strategies
 2. Compare different approaches across agents
@@ -121,6 +160,7 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 
 - **OpenCode Learning**: 13+ comprehensive documents covering architecture, agents, tools, and prompts
 - **Roo Code Learning**: 7 documents totaling ~4,375 lines of in-depth analysis
+- **Clawdbot Learning**: 6+ documents covering gateway architecture, security, skills, and agent lifecycle
 - **Coding Agent Research**: Analysis of 10+ open-source coding agents
 
 ## 🔗 External Resources
@@ -133,6 +173,10 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 ### Roo Code
 - **VS Code Extension**: [Search "Roo Code" in VS Code Marketplace](https://marketplace.visualstudio.com/)
 - **Agent Skills Spec**: https://agentskills.io/
+
+### Clawdbot
+- **GitHub**: [clawdbot/clawdbot](https://github.com/clawdbot/clawdbot)
+- **Pi Coding Agent**: [mariozechner/pi-coding-agent](https://github.com/mariozechner/pi-coding-agent)
 
 ### Research References
 - Various open-source coding agent repositories (see coding_agent_research/)
@@ -158,5 +202,5 @@ Keep documentation accurate, clear, and well-referenced.
 ---
 
 **Created**: January 2026  
-**Last Updated**: January 13, 2026  
-**Focus**: AI coding agent architecture, protocols, and context management
+**Last Updated**: January 26, 2026  
+**Focus**: AI coding agent architecture, protocols, context management, and multi-channel platforms
