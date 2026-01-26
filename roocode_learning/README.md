@@ -139,6 +139,7 @@ Comprehensive learning materials for understanding Roo-Code's architecture, impl
 | **14** | VSCode Integration | Low | 9KB | ClineProvider, webview, terminals |
 | **15** | MCP Integration | Low | 8KB | MCP servers, McpHub, tool discovery |
 | **16** | Custom Modes | Low | 9KB | CustomModesManager, marketplace |
+| **17** | Task Persistence | Medium | 6KB | Hybrid storage, VSCode Memento, JSON files |
 
 ---
 

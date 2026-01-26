@@ -8,7 +8,7 @@ Comprehensive documentation for **Clawdbot** - a personal AI assistant platform 
 
 ### Core Architecture
 
-1. **[Overview](./01_overview.md)** - Repository structure, technology stack, and architectural overview
+1. **[01_overview.md](./01_overview.md)** - Repository structure, technology stack, and architectural overview
 2. **[Prompt System](./02_prompt_system.md)** - Workspace files (SOUL.md, AGENTS.md, etc.), prompt engineering, and agent behavior configuration
 3. **[Tool System](./03_tool_system.md)** - Tool categories, execution flow, approval systems, and plugin architecture
 
@@ -17,6 +17,7 @@ Comprehensive documentation for **Clawdbot** - a personal AI assistant platform 
 4. **[Skills System](./04_skills_system.md)** - Skills discovery, SKILL.md format, installation orchestration, and eligibility filtering
 5. **[Access Control & Security](./05_access_control.md)** - DM pairing, allowlists, exec approvals, sandbox policies, elevated execution, and security audit
 6. **[Task Completion & Agent Lifecycle](./06_task_completion.md)** - Agent run states, completion detection, session management, and streaming events
+7. **[09_session_storage.md](./09_session_storage.md)** - Session persistence, JSONL logging, metadata separation, and pruning logic
 
 ---
 
@@ -303,6 +304,7 @@ Found an error or want to add content?
 | 04_skills_system.md | 2026-01-26 | Discovery, SKILL.md format, installation, eligibility |
 | 05_access_control.md | 2026-01-26 | DM pairing, allowlists, exec approvals, sandbox, audit |
 | 06_task_completion.md | 2026-01-26 | Run lifecycle, completion detection, session management |
+| 09_session_storage.md | 2026-01-26 | Session persistence, JSONL logging, pruning logic |
 
 ---
 

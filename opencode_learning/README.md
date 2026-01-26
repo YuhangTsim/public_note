@@ -119,9 +119,20 @@ This directory contains comprehensive documentation on OpenCode's architecture a
     - Configuration differences and migration
     - Custom mode creation patterns
 
-### Additional Topics (Coming Soon)
+16. **[16_provider_layer.md](./16_provider_layer.md)** - LLM provider abstraction
+    - Provider architecture
+    - Supported providers (15+)
+    - Model selection and configuration
+    - Authentication patterns
 
-16. **16_provider_layer.md** - LLM provider abstraction
+17. **[17_session_storage_architecture.md](./17_session_storage_architecture.md)** - Session persistence & storage
+    - Split-file architecture (normalized JSON)
+    - Lazy loading & streaming
+    - File locking & concurrency
+    - Compaction & pruning logic
+    - No database dependency
+
+### Additional Topics (Coming Soon)
     - Provider architecture
     - Supported providers (15+)
     - Model selection and configuration
