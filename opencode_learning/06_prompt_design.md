@@ -114,6 +114,19 @@ Your capabilities include:
 `
 ```
 
+### Model Identification (Updated: January 26, 2026)
+
+The system prompt now includes explicit model identification to help the agent understand its own capabilities and constraints:
+
+```typescript
+// From packages/opencode/src/session/system.ts
+[
+  `You are powered by the model named ${model.api.id}. The exact model ID is ${model.providerID}/${model.api.id}`,
+  `Here is some useful information about the environment you are running in:`,
+  // ...
+].join("\n")
+```
+
 ## Core Agent Prompts
 
 ### Build Agent (Default)
@@ -336,6 +349,7 @@ ${formatToolParameters(tool.parameters)}
 - Use \`glob\` to find files by pattern
 - Use \`grep\` to search content across files
 - Prefer \`edit\` over \`write\` for modifications to preserve context
+- Use \`apply_patch\` for efficient multi-file or complex edits (Updated: January 26, 2026)
 
 ### Shell Commands
 - Use \`bash\` for git operations, builds, tests
@@ -352,6 +366,40 @@ ${formatToolParameters(tool.parameters)}
   return sections.join("\n")
 }
 ```
+
+### Dynamic AGENTS.md Resolution (Updated: January 26, 2026)
+
+OpenCode now dynamically resolves `AGENTS.md` files as the agent explores the codebase. This ensures that directory-specific rules are always respected, even in large monorepos.
+
+```typescript
+// From packages/opencode/src/session/instruction.ts
+export async function resolve(messages: MessageV2.WithParts[], filepath: string) {
+  const system = await systemPaths()
+  const already = loaded(messages)
+  const results: { filepath: string; content: string }[] = []
+
+  let current = path.dirname(path.resolve(filepath))
+  const root = path.resolve(Instance.directory)
+
+  while (current.startsWith(root)) {
+    const found = await find(current)
+    if (found && !system.has(found) && !already.has(found)) {
+      const content = await Bun.file(found).text().catch(() => undefined)
+      if (content) {
+        results.push({ filepath: found, content: "Instructions from: " + found + "\n" + content })
+      }
+    }
+    if (current === root) break
+    current = path.dirname(current)
+  }
+  return results
+}
+```
+
+**Key Features**:
+- **Recursive Discovery**: Traverses up from the accessed file to the project root.
+- **Deduplication**: Ensures instructions aren't loaded multiple times in the same session.
+- **Precedence**: Deeper `AGENTS.md` files take precedence over those higher in the tree.
 
 ## Behavior Instructions
 

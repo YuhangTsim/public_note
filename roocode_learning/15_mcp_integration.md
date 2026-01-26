@@ -70,7 +70,12 @@ export class McpHub {
   
   // Execute tool on appropriate server
   async callTool(toolName: string, input: any): Promise<any> {
-    const [serverName, actualToolName] = toolName.split('/')
+    // Tool names use '--' separator (e.g., server-name--tool-name)
+    // Fuzzy matching: hyphens and underscores are treated as equivalent
+    const parts = toolName.split('--')
+    const serverName = parts[0]
+    const actualToolName = parts.slice(1).join('--')
+    
     const server = this.servers.get(serverName)
     
     if (!server) {
@@ -81,6 +86,32 @@ export class McpHub {
   }
 }
 ```
+
+## Wildcard Support
+
+As of **v3.43.0**, you can auto-approve all tools from a specific MCP server using the `"alwaysAllow": ["*"]` configuration.
+
+```json
+{
+  "roo-cline.mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/username/projects"],
+      "alwaysAllow": ["*"]
+    }
+  }
+}
+```
+
+## Tool Naming & Fuzzy Matching
+
+- **Separator**: Tool names now use `--` as the separator between the server name and the tool name (e.g., `gpts--fetch_url`).
+- **Fuzzy Matching**: Hyphens (`-`) and underscores (`_`) are treated as equivalent when matching tool names, improving compatibility across different server implementations.
+
+## System Prompt Changes
+
+The **MCP SERVERS** section has been removed from the system prompt to reduce token usage. The AI now discovers available tools through the standard tool definition mechanism.
+
 
 ## McpServer - Individual Connection
 
@@ -346,10 +377,12 @@ await server.start()
 
 ## Key Insights
 
-- **MCP extends capabilities** without modifying core code
-- **Multiple servers** can run simultaneously
-- **Tools prefixed** with server name to avoid conflicts
+- **Separator**: Tool names now use `--` as the separator (e.g., `server--tool`)
+- **Fuzzy Matching**: Hyphens and underscores are equivalent
+- **Wildcard Support**: `"alwaysAllow": ["*"]` auto-approves all tools from a server
+- **System Prompt**: MCP server info removed from system prompt to save tokens
 - **Automatic reconnection** on failures
 - **Custom servers** let users add domain-specific tools
 
-**Version**: Roo-Code v3.39+ (January 2026)
+**Version**: Roo-Code v3.43.0 (January 2026)
+**Updated**: January 26, 2026

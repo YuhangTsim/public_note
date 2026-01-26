@@ -266,4 +266,5 @@ if (contextLimit > 100000) {
 - **Cost awareness** - Condensation uses LLM calls, use sparingly
 - **Preserve critical info** - System prompts, errors, tool calls never removed
 
-**Version**: Roo-Code v3.39+ (January 2026)
+**Version**: Roo-Code v3.43.0 (January 2026)
+**Updated**: January 26, 2026

@@ -1,6 +1,7 @@
 # Roo-Code Learning Materials
 
-> **Version**: Based on Roo-Code v3.39+ (January 2026)  
+> **Version**: Based on Roo-Code v3.43.0 (January 2026)  
+> **Breaking Change**: XML Protocol REMOVED. Native OpenAI-format tool calling is now the ONLY supported method.
 > **Repository**: [Roo-Code on GitHub](https://github.com/RooVetGit/Roo-Cline)
 
 Comprehensive learning materials for understanding Roo-Code's architecture, implementation patterns, and advanced features.
@@ -116,7 +117,7 @@ Comprehensive learning materials for understanding Roo-Code's architecture, impl
 | Doc | Topic | Priority | Size | Key Concepts |
 |-----|-------|----------|------|--------------|
 | **04** | Tool System | ⭐ High | 9KB | Tool validation, execution, error recovery |
-| **08** | Native Protocol | ⭐ High | 2KB | Native vs XML, malformed JSON handling |
+| **08** | Native Protocol | ⭐ High | 2KB | Native-only (XML removed), malformed JSON handling |
 | **09** | Message Parsing | Medium | 6KB | Parser implementation, error recovery |
 | **10** | Task Completion | Medium | 6KB | AttemptCompletionTool, validation |
 
@@ -160,7 +161,7 @@ Understanding how Roo discovers, validates, and uses skills. Covers:
 
 How Roo validates tool calls and recovers from malformed responses. Covers:
 - `validateToolUse` implementation
-- Native vs XML protocol differences
+- Native vs XML protocol differences (XML REMOVED in v3.43.0)
 - Error recovery strategies for incomplete/invalid JSON
 - Graceful degradation patterns
 
@@ -354,8 +355,8 @@ After completing these materials:
 ## 📅 Document Version
 
 - **Created**: January 2026
-- **Based on**: Roo-Code v3.39+
-- **Last Updated**: January 13, 2026
+- **Based on**: Roo-Code v3.43.0
+- **Last Updated**: January 26, 2026
 - **Codebase Reference**: `github_repos/Roo-Code/` (main branch)
 
 ---

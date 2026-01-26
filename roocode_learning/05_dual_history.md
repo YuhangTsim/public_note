@@ -285,4 +285,5 @@ class MessageManager {
 
 ---
 
-**Version**: Roo-Code v3.39+ (January 2026)
+**Version**: Roo-Code v3.43.0 (January 2026)
+**Updated**: January 26, 2026

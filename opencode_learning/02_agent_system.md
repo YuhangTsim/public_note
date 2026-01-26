@@ -13,7 +13,7 @@ The agent system is the core orchestration mechanism in OpenCode. Agents are con
 User-facing agents that can be selected directly:
 
 - **build** - Default full-access agent for development work
-- **plan** - Read-only agent for analysis and code exploration
+- **plan** - Specialized agent for research and planning with restricted permissions
 - **compaction** - Internal agent for message history compression
 - **title** - Generates session titles
 - **summary** - Creates session summaries
@@ -89,18 +89,27 @@ export const Info = z.object({
   mode: "primary",
   native: true,
   permission: {
+    question: "allow",
+    plan_exit: "allow",
+    external_directory: {
+      [path.join(Global.Path.data, "plans", "*")]: "allow",
+    },
     edit: {
       "*": "deny",                    // No file edits
-      ".opencode/plan/*.md": "allow", // Except planning docs
+      [path.join(".opencode", "plans", "*.md")]: "allow", // Except planning docs
     },
-    question: "allow",
   }
 }
 ```
 
-**Purpose**: Safe exploration and analysis
+**Purpose**: Safe exploration and analysis (Updated: January 26, 2026)
 **Use Case**: Understanding unfamiliar codebases, planning changes
-**Restrictions**: Cannot modify files (except planning docs)
+**Restrictions**: Cannot modify files (except planning docs in `.opencode/plans/`)
+**Plan Mode System**:
+- **plan_enter**: Tool used by build agent to switch to plan mode.
+- **plan_exit**: Tool used by plan agent to request plan approval and switch back to build mode.
+- **Plan Storage**: Plans are stored at `.opencode/plans/` or in the global data directory.
+- **Workflow**: Plan mode enforces a multi-phase workflow (Initial Understanding, Design, Review, Final Plan).
 
 ### Explore Agent
 
@@ -191,6 +200,8 @@ const userOverrides = {
 - `doom_loop`: Detect infinite tool call loops
 - `external_directory`: Access files outside project directory
 - `question`: Ask user for input
+- `plan_enter`: Enter plan mode (Build agent only)
+- `plan_exit`: Exit plan mode and request approval (Plan agent only)
 - Tool-specific: `bash`, `edit`, `read`, etc.
 
 ## Agent Lifecycle

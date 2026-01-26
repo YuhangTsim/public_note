@@ -1,6 +1,7 @@
 # Roo-Code Learning Materials - Complete Guide
 
-**Updated January 2026 - Based on v3.39+ Codebase Analysis**
+**Updated January 2026 - Based on v3.43.0 Codebase Analysis**
+**Breaking Change**: XML Protocol REMOVED. Native tool calling is now the ONLY supported method.
 
 This learning guide consolidates the most important concepts from Roo-Code's architecture. For the detailed original notes, see the individual numbered documents in this directory.
 
@@ -37,11 +38,11 @@ Roo-Code is a **VSCode extension** providing an AI coding assistant with:
 ```
 VSCode Extension
   └── ClineProvider (Webview Bridge)
-       └── Task Orchestrator (src/core/task/Task.ts)
-            ├── Dual History (UI + API)
-            ├── Protocol Layer (XML + Native)
-            ├── Tool Execution Engine
-            └── ApiHandler (40+ providers)
+        └── Task Orchestrator (src/core/task/Task.ts)
+             ├── Dual History (UI + API)
+             ├── Protocol Layer (Native-only, XML removed)
+             ├── Tool Execution Engine
+             └── ApiHandler (40+ providers)
 ```
 
 **Key Files**:
@@ -107,20 +108,21 @@ Skills are **filesystem-based capability extensions** following [agentskills.io]
 3. **Load instructions** → Follow the skill's guidance
 
 **System Prompt Injection** (`src/core/prompts/sections/skills.ts`):
-```xml
-<mandatory_skill_check>
+```
+# MANDATORY SKILL CHECK
 Before responding to ANY user request, you MUST:
 1. Check if any available skill applies
 2. If a skill matches:
    - Use read_file on the skill's SKILL.md location
    - Load the full skill instructions
    - Follow those instructions for this task
-</mandatory_skill_check>
 
 Available Skills:
 - react-testing: Testing React components with Jest and RTL
   Location: /Users/user/.roo/skills/react-testing/SKILL.md
 ```
+
+**Note on Linked Files**: Linked files in `SKILL.md` are **NOT** auto-loaded. The AI must explicitly use `read_file` to access them.
 
 ### Skills Discovery \u0026 Validation
 
@@ -1050,15 +1052,24 @@ async recursivelyMakeClineRequests() {
 
 ## Native Protocol
 
-### Native vs XML
+### Native-Only (XML Removed)
 
-| Aspect | XML Protocol (Legacy) | Native Protocol (Current) |
-|--------|----------------------|---------------------------|
-| **Tool Definitions** | In system prompt as XML tags | Separate `tools` parameter (JSON schema) |
-| **Model Output** | `<read_file><path>...</path></read_file>` | `{ tool_calls: [{ name: "read_file", arguments: "{...}" }] }` |
-| **Token Usage** | High (tools in every prompt) | Low (tools separate) |
-| **Parsing** | `AssistantMessageParser.ts` | `NativeToolCallParser.ts` |
-| **Detection** | No `id` field in tool_use | Has `id` field in tool_use |
+As of **v3.43.0**, the XML protocol has been completely removed. Roo-Code now exclusively uses the native OpenAI-format tool calling protocol.
+
+| Aspect | Native Protocol (Current) |
+|--------|---------------------------|
+| **Tool Definitions** | Separate `tools` parameter (JSON schema) |
+| **Model Output** | `{ tool_calls: [{ name: "read_file", arguments: "{...}" }] }` |
+| **Token Usage** | Low (tools separate from system prompt) |
+| **Parsing** | `NativeToolCallParser.ts` |
+| **Detection** | Has `id` field in tool_use |
+
+### MCP Tool Naming & Wildcards
+
+- **Separator**: Tool names use `--` (e.g., `server--tool`).
+- **Fuzzy Matching**: Hyphens and underscores are equivalent.
+- **Wildcards**: `"alwaysAllow": ["*"]` auto-approves all tools from a server.
+- **System Prompt**: MCP server info removed from system prompt.
 
 ### Native Tool Call Format
 
@@ -1102,8 +1113,9 @@ LLMs have token limits (e.g., 200K for Claude). Long conversations exceed limits
 
 ### The Solutions
 
-**1. Condensation** (`src/core/condense/index.ts`):
+**1. Condensation v2** (`src/core/condense/index.ts`):
 - Summarizes older parts of conversation
+- Handles "orphan" tool calls with synthetic results
 - Keeps recent messages intact
 - Uses LLM to generate summaries
 
@@ -1175,6 +1187,7 @@ if (estimatedTokens > maxContextWindow * 0.9) {
 
 ---
 
-**Documentation Version**: January 2026 (v3.39+)
+**Documentation Version**: January 2026 (v3.43.0)
+**Updated**: January 26, 2026
 **Coverage**: All 4 critical requirements fully documented
 **Total Learning Materials**: 6000+ lines across multiple documents

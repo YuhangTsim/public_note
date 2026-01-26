@@ -94,7 +94,20 @@ export namespace Tool {
 **Safety**: Requires read first for existing files
 **Use Case**: New files, complete rewrites
 
-#### 4. Glob Tool (`glob`)
+#### 4. Apply Patch Tool (`apply_patch`)
+
+```typescript
+// Apply patches using a stripped-down diff format
+{
+  patch: string, // Patch text with *** Begin Patch and *** End Patch
+}
+```
+
+**Purpose**: Efficiently edit files using a specialized diff format (Updated: January 26, 2026)
+**Safety**: Includes verification of hunks before application
+**Tool Selection Logic**: GPT-4o and GPT-5 models are automatically configured to use `apply_patch` instead of `edit` or `write` for improved reliability and token efficiency.
+
+#### 5. Glob Tool (`glob`)
 
 ```typescript
 // Find files by pattern
@@ -110,7 +123,7 @@ export namespace Tool {
 **Performance**: 60s timeout, 100 file limit
 **Sorting**: Results sorted by modification time
 
-#### 5. Grep Tool (`grep`)
+#### 6. Grep Tool (`grep`)
 
 ```typescript
 // Search file contents
@@ -129,7 +142,7 @@ export namespace Tool {
 
 ### Execution Tools
 
-#### 6. Bash Tool (`bash`)
+#### 7. Bash Tool (`bash`)
 
 ```typescript
 // Execute shell command
@@ -147,7 +160,7 @@ export namespace Tool {
 
 ### Agent Orchestration Tools
 
-#### 7. Task Tool (`task`)
+#### 8. Task Tool (`task`)
 
 ```typescript
 // Spawn subagent
@@ -164,7 +177,7 @@ export namespace Tool {
 **State**: Stateless unless session_id provided
 **Return**: Single message with results
 
-#### 8. Background Task Tool (`background_task`)
+#### 9. Background Task Tool (`background_task`)
 
 ```typescript
 // Async subagent execution
@@ -183,7 +196,7 @@ export namespace Tool {
 
 ### Web Tools
 
-#### 9. WebFetch Tool (`webfetch`)
+#### 10. WebFetch Tool (`webfetch`)
 
 ```typescript
 // Fetch web content
@@ -198,7 +211,7 @@ export namespace Tool {
 **Conversion**: HTML → Markdown by default
 **Safety**: HTTPS enforcement, timeout protection
 
-#### 10. WebSearch Tool (`websearch`)
+#### 11. WebSearch Tool (`websearch`)
 
 ```typescript
 // Search web via Exa AI
@@ -213,7 +226,7 @@ export namespace Tool {
 **Provider**: Exa AI (requires opencode provider or flag)
 **Availability**: Zen users or OPENCODE_ENABLE_EXA=1
 
-#### 11. CodeSearch Tool (`codesearch`)
+#### 12. CodeSearch Tool (`codesearch`)
 
 ```typescript
 // Search GitHub repositories
@@ -233,7 +246,7 @@ export namespace Tool {
 
 ### State Management Tools
 
-#### 12. TodoWrite Tool (`todowrite`)
+#### 13. TodoWrite Tool (`todowrite`)
 
 ```typescript
 // Update todo list
@@ -251,7 +264,7 @@ export namespace Tool {
 **Visibility**: User sees real-time updates
 **Rules**: Only one in_progress at a time
 
-#### 13. TodoRead Tool (`todoread`)
+#### 14. TodoRead Tool (`todoread`)
 
 ```typescript
 // Read current todo list
@@ -266,7 +279,7 @@ export namespace Tool {
 
 ### LSP Tools
 
-#### 14. LSP Tool Suite (`lsp_*`)
+#### 15. LSP Tool Suite (`lsp_*`)
 
 ```typescript
 // Hover information
@@ -300,7 +313,7 @@ lsp_rename(filePath, line, character, newName)
 
 ### Interactive Tools
 
-#### 15. Question Tool (`question`)
+#### 16. Question Tool (`question`)
 
 ```typescript
 // Ask user for input
@@ -314,7 +327,7 @@ lsp_rename(filePath, line, character, newName)
 **Availability**: CLI only (Flag.OPENCODE_CLIENT === "cli")
 **Permission**: Configurable per agent
 
-#### 16. Skill Tool (`skill`)
+#### 17. Skill Tool (`skill`)
 
 ```typescript
 // Load skill workflow
@@ -329,7 +342,7 @@ lsp_rename(filePath, line, character, newName)
 
 ### Utility Tools
 
-#### 17. Batch Tool (`batch`)
+#### 18. Batch Tool (`batch`)
 
 ```typescript
 // Execute multiple tool calls atomically

@@ -43,15 +43,14 @@ Skills extend Roo-Code's capabilities **without code changes**. They're:
 3. Follow skill instructions
 
 **System Prompt Injection**:
-```xml
-<mandatory_skill_check>
+```
+# MANDATORY SKILL CHECK
 Before responding, you MUST:
 1. Check if any skill applies to this request
 2. If a skill matches:
    - Use read_file on the skill's SKILL.md
    - Load full skill instructions
    - Follow those instructions
-</mandatory_skill_check>
 
 Available Skills:
 - react-testing: Testing React components
@@ -75,6 +74,13 @@ class SkillsManager {
 }
 ```
 
+## Linked File Handling
+
+**IMPORTANT**: Linked files mentioned within a `SKILL.md` (e.g., `[Reference](docs/api.md)`) are **NOT** automatically loaded by Roo-Code. 
+
+- The AI must explicitly use `read_file` to access any linked files if they are needed to fulfill the task.
+- Skill authors should ensure that critical instructions are contained within the `SKILL.md` itself or clearly instruct the AI to read specific linked files.
+
 ---
 
 ## Source Code
@@ -86,4 +92,5 @@ class SkillsManager {
 
 ---
 
-**Version**: Roo-Code v3.39+ (January 2026)
+**Version**: Roo-Code v3.43.0 (January 2026)
+**Updated**: January 26, 2026

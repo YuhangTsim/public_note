@@ -1,22 +1,29 @@
 # 08: Native Protocol
 
-**Native JSON vs XML Tool Calling**
+**Native JSON Tool Calling (The Only Supported Protocol)**
 
 ---
 
-## Protocols Comparison
+## Protocol Overview
 
-| Aspect | XML Protocol | Native Protocol |
-|--------|--------------|-----------------|
-| **Format** | `<read_file><path>...</path></read_file>` | `{ tool_calls: [{ name: "read_file", arguments: "{...}" }] }` |
-| **Tools** | In system prompt | Separate `tools` parameter |
-| **Parser** | `AssistantMessageParser.ts` | `NativeToolCallParser.ts` |
-| **Tokens** | High (tools in every prompt) | Low (tools separate) |
-| **Detection** | No `id` field | Has `id` field |
+As of **v3.43.0**, the XML protocol has been **REMOVED**. Roo-Code now exclusively uses the native OpenAI-format tool calling protocol.
+
+| Aspect | Native Protocol |
+|--------|-----------------|
+| **Format** | `{ tool_calls: [{ name: "read_file", arguments: "{...}" }] }` |
+| **Tools** | Separate `tools` parameter in API request |
+| **Parser** | `NativeToolCallParser.ts` |
+| **Tokens** | Low (tools separate from system prompt) |
+| **Detection** | Uses unique `id` field for each tool call |
+
+> [!IMPORTANT]
+> **XML Protocol Removal**: All legacy XML parsing logic (`AssistantMessageParser.ts`) and XML-based tool definitions in the system prompt have been deleted. This significantly reduces token overhead and improves reliability with modern LLMs.
 
 ---
 
 ## Malformed JSON Handling
+
+Even with native tool calling, LLMs may occasionally produce malformed JSON in the `arguments` field. Roo-Code employs a multi-layer defense:
 
 ### Multi-Layer Defense
 
@@ -29,9 +36,9 @@ processStreamingChunk(delta: string) {
   
   try {
     const partial = parseJSON(this.accumulator)
-    // Show user incremental updates
+    // Show user incremental updates in the UI
   } catch {
-    // Not parseable yet
+    // Not parseable yet (incomplete JSON)
   }
 }
 ```
@@ -43,22 +50,22 @@ finalizeParsing(toolCall) {
     return JSON.parse(toolCall.arguments)
   } catch (error) {
     console.error('Malformed JSON:', error)
-    return null // Signal failure
+    return null // Signal failure to the orchestrator
   }
 }
 ```
 
-**Layer 3: Execution Abortion**
+**Layer 3: Execution Abortion & Feedback**
 ```typescript
 if (!block.parsedArgs) {
   await say('error', 'Malformed JSON')
   toolResults.push({
     type: 'tool_result',
     tool_use_id: block.id,
-    content: 'Error: Malformed JSON',
+    content: 'Error: Malformed JSON. Please try again with valid JSON arguments.',
     is_error: true
   })
-  continue // Skip execution
+  continue // Skip execution of this specific tool call
 }
 ```
 
@@ -68,9 +75,9 @@ if (!block.parsedArgs) {
 
 | File | Purpose |
 |------|---------|
-| `src/core/assistant-message/NativeToolCallParser.ts` | Native protocol parsing |
-| `src/core/assistant-message/AssistantMessageParser.ts` | XML protocol parsing |
+| `src/core/assistant-message/NativeToolCallParser.ts` | Native protocol parsing and streaming support |
 
 ---
 
-**Version**: Roo-Code v3.39+ (January 2026)
+**Version**: Roo-Code v3.43.0 (January 2026)
+**Updated**: January 26, 2026
