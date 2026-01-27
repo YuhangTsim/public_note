@@ -103,7 +103,7 @@ stateDiagram-v2
     }
     
     state "System Hook (Enforcer)" as Hook {
-        Finished --> CheckPending: Hook: PostToolUse
+        Finished --> CheckPending: Hook PostToolUse
         CheckPending --> ForcingLoop: Pending Items Exist!
         ForcingLoop --> Working: "You have pending TODOs. Continue."
     }
