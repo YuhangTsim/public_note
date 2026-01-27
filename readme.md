@@ -73,6 +73,23 @@ Comprehensive documentation for **Clawdbot** - a personal AI assistant platform 
 
 See [clawdbot_learning/README.md](./clawdbot_learning/README.md) for complete documentation index.
 
+### [oh_my_opencode_learning/](./oh_my_opencode_learning/)
+Deep dive into **Oh My OpenCode** (OMO), a "battery-included" orchestration suite for OpenCode that introduces the Sisyphus agent.
+
+**Topics covered:**
+- Sisyphus Orchestrator & "Ultrawork" workflow
+- Specialized sub-agents (Oracle, Librarian, Explore)
+- Mandatory Category/Skill delegation protocols
+- Prompt engineering analysis of `sisyphus-prompt.md`
+- "Todo Continuation Enforcer" for persistence
+
+**Key documents:**
+- [01_overview.md](./oh_my_opencode_learning/01_overview.md) - Core philosophy and features
+- [02_architecture_and_agents.md](./oh_my_opencode_learning/02_architecture_and_agents.md) - Agent hierarchy and delegation
+- [04_prompt_engineering.md](./oh_my_opencode_learning/04_prompt_engineering.md) - Analysis of the Sisyphus system prompt
+
+See [oh_my_opencode_learning/README.md](./oh_my_opencode_learning/README.md) for detailed index.
+
 ### [coding_agent_research/](./coding_agent_research/)
 Research on context selection and management methodologies in open-source coding agents.
 
@@ -161,6 +178,7 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 - **OpenCode Learning**: 13+ comprehensive documents covering architecture, agents, tools, and prompts
 - **Roo Code Learning**: 7 documents totaling ~4,375 lines of in-depth analysis
 - **Clawdbot Learning**: 6+ documents covering gateway architecture, security, skills, and agent lifecycle
+- **Oh My OpenCode Learning**: 4 documents detailing the Sisyphus orchestrator and delegation system
 - **Coding Agent Research**: Analysis of 10+ open-source coding agents
 
 ## 🔗 External Resources
@@ -177,6 +195,10 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 ### Clawdbot
 - **GitHub**: [clawdbot/clawdbot](https://github.com/clawdbot/clawdbot)
 - **Pi Coding Agent**: [mariozechner/pi-coding-agent](https://github.com/mariozechner/pi-coding-agent)
+
+### Oh My OpenCode
+- **GitHub**: [code-yeongyu/oh-my-opencode](https://github.com/code-yeongyu/oh-my-opencode)
+- **Community**: [Discord Server](https://discord.gg/PUwSMR9XNk)
 
 ### Research References
 - Various open-source coding agent repositories (see coding_agent_research/)
