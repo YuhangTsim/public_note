@@ -25,6 +25,21 @@ Documentation and analysis of the **Oh My OpenCode** (OMO) project, a sophistica
    - Mandatory Justification constraints.
    - Failure recovery protocols.
 
+5. **[05_sisyphus_prompt_example.md](./05_sisyphus_prompt_example.md)**
+   - **Full text** of the Sisyphus prompt with detailed annotations.
+   - Breakdown of the "Identity", "Intent Gate", and "Constraints" sections.
+
+6. **[06_orchestration_visuals.md](./06_orchestration_visuals.md)**
+   - **Mermaid diagrams** visualizing the decision flow.
+   - The Core Loop (Phase 0 → Phase 3).
+   - The Persistence Loop (Todo Enforcer).
+
+7. **[07_system_design_deep_dive.md](./07_system_design_deep_dive.md)**
+   - Technical architecture analysis.
+   - How **Hooks** enforce the Todo rules.
+   - How **Context Injection** and auto-discovery work.
+   - The "Ultrawork" loop mechanics.
+
 ## 🚀 Key Takeaways
 
 - **Orchestration First**: OMO transforms the agent from a "coder" to a "manager" who delegates.
