@@ -1,6 +1,8 @@
-# Clawdbot Learning Documentation
+# Clawdbot/Moltbot Learning Documentation
 
-Comprehensive documentation for **Clawdbot** - a personal AI assistant platform with multi-channel support, featuring gateway-based architecture, extensive security controls, and powerful skill extensibility.
+> **🔄 IMPORTANT REBRAND (2026.1.29):** The project was renamed from **Clawdbot** to **Moltbot**. The npm package is now `moltbot`, documentation moved to https://docs.molt.bot, but the GitHub repository URL remains the same. See **[Version History](./10_version_history.md)** for migration details.
+
+Comprehensive documentation for **Clawdbot/Moltbot** - a personal AI assistant platform with multi-channel support, featuring gateway-based architecture, extensive security controls, and powerful skill extensibility.
 
 ---
 
@@ -19,13 +21,18 @@ Comprehensive documentation for **Clawdbot** - a personal AI assistant platform 
 6. **[Task Completion & Agent Lifecycle](./06_task_completion.md)** - Agent run states, completion detection, session management, and streaming events
 7. **[09_session_storage.md](./09_session_storage.md)** - Session persistence, JSONL logging, metadata separation, and pruning logic
 
+### Version History & Updates
+
+8. **[Version History](./10_version_history.md)** - Release notes, changelog, migration guides (Clawdbot → Moltbot rebrand)
+9. **[Architectural Changes (v2026.1.29)](./11_architectural_changes_2026_01_29.md)** - Design & architecture changes in latest release
+
 ---
 
 ## 🚀 Quick Start
 
-### What is Clawdbot?
+### What is Clawdbot/Moltbot?
 
-Clawdbot is a **self-hosted AI assistant platform** that connects Claude AI to multiple messaging platforms (WhatsApp, Telegram, Discord, Slack, iMessage, Signal, etc.) with a focus on security, extensibility, and developer experience.
+Clawdbot/Moltbot (renamed in 2026.1.29) is a **self-hosted AI assistant platform** that connects Claude AI to multiple messaging platforms (WhatsApp, Telegram, Discord, Slack, iMessage, Signal, etc.) with a focus on security, extensibility, and developer experience.
 
 **Key Differentiators:**
 - **Gateway-based architecture** - WebSocket control plane separates runtime from channels
@@ -96,7 +103,7 @@ See: [Overview - Architecture](./01_overview.md#architecture)
 
 ### Workspace Files
 
-Clawdbot reads markdown files from `.clawdbot/` to configure agent behavior:
+Clawdbot/Moltbot reads markdown files from `.moltbot/` (or legacy `.clawdbot/`) to configure agent behavior:
 
 | File | Purpose |
 |------|---------|
@@ -105,6 +112,8 @@ Clawdbot reads markdown files from `.clawdbot/` to configure agent behavior:
 | `WORKSPACE.md` | Project context and conventions |
 | `PLAN.md` | Current task plans and priorities |
 | `SESSION.md` | Per-session context (ephemeral) |
+
+> **Note:** Config directory changed from `~/.clawdbot/` to `~/.moltbot/` in version 2026.1.29. Legacy paths are auto-migrated.
 
 See: [Prompt System](./02_prompt_system.md)
 
@@ -220,10 +229,10 @@ See: [Skills System - Creating Custom Skills](./04_skills_system.md#usage-exampl
 
 ```bash
 # Basic audit (config only)
-$ clawdbot security audit
+$ moltbot security audit  # or 'clawdbot' for legacy compat
 
 # Deep audit (includes live gateway probe)
-$ clawdbot security audit --deep
+$ moltbot security audit --deep
 
 # Example output:
 Security Audit Report
@@ -276,11 +285,13 @@ See: [Overview - Directory Structure](./01_overview.md#directory-structure)
 
 ## 🔗 External Resources
 
-- **Official Repository:** https://github.com/clawdbot/clawdbot
+- **Official Repository:** https://github.com/clawdbot/clawdbot (repo name unchanged)
+- **Official Documentation:** https://docs.molt.bot (formerly https://docs.clawd.bot)
+- **NPM Package:** https://www.npmjs.com/package/moltbot (formerly `clawdbot`)
 - **Pi Coding Agent:** https://github.com/mariozechner/pi-coding-agent
 - **Claude API Docs:** https://docs.anthropic.com/claude/reference
-- **Discord Bot Setup:** `docs/platforms/discord.md` in repo
-- **Tailscale Integration:** `docs/network/tailscale.md` in repo
+- **Discord Bot Setup:** https://docs.molt.bot/channels/discord
+- **Tailscale Integration:** https://docs.molt.bot/gateway/tailscale
 
 ---
 
@@ -305,6 +316,8 @@ Found an error or want to add content?
 | 05_access_control.md | 2026-01-26 | DM pairing, allowlists, exec approvals, sandbox, audit |
 | 06_task_completion.md | 2026-01-26 | Run lifecycle, completion detection, session management |
 | 09_session_storage.md | 2026-01-26 | Session persistence, JSONL logging, pruning logic |
+| **10_version_history.md** | **2026-01-29** | **Version history, changelog, Clawdbot→Moltbot migration** |
+| **11_architectural_changes_2026_01_29.md** | **2026-01-29** | **Architectural & design changes in v2026.1.29** |
 
 ---
 
@@ -313,10 +326,11 @@ Found an error or want to add content?
 ### Security Warnings
 
 1. **Never use `dmPolicy: open` in production** - Always use `allowlist` or `disabled`
-2. **Protect your config file** - `chmod 600 .clawdbot/config.yaml`
+2. **Protect your config file** - `chmod 600 ~/.moltbot/config.yaml` (or `~/.clawdbot/` for legacy)
 3. **Review exec-approvals regularly** - Remove unused command patterns
-4. **Run security audit often** - `clawdbot security audit --deep`
+4. **Run security audit often** - `moltbot security audit --deep`
 5. **Use strong tokens** - 32+ random characters for gateway auth
+6. **⚠️ Gateway auth now required** - As of v2026.1.29, `auth: none` is removed (breaking change)
 
 ### Platform Limitations
 
@@ -369,7 +383,7 @@ agents:
 
 ### Auto-Allow Safe Commands
 
-Edit `~/.clawdbot/exec-approvals.json`:
+Edit `~/.moltbot/exec-approvals.json` (or `~/.clawdbot/` for legacy):
 ```json
 {
   "agents": {
@@ -389,4 +403,20 @@ Edit `~/.clawdbot/exec-approvals.json`:
 
 **Happy Learning! 🚀**
 
-For questions or issues, consult the official Clawdbot documentation or community resources.
+For questions or issues, consult the official Moltbot documentation at https://docs.molt.bot or community resources.
+
+---
+
+## 🆕 What's New?
+
+**Latest Update: 2026-01-29**
+
+- **Major Rebrand:** Clawdbot → Moltbot (npm package, CLI, docs all renamed)
+- **New Channels:** Twitch plugin, Google Chat (beta)
+- **Security:** Gateway auth now required (breaking change), SSH hardening, Windows ACL audits
+- **Providers:** Venice AI, Xiaomi MiMo support
+- **Telegram:** Quote replies, edit messages, stickers with vision
+- **Tools:** Per-sender group policies, `tools.alsoAllow` additive allowlist
+- **Architecture:** Browser control routing via gateway/node, direct gateway transport, per-account session scope
+
+See **[Version History](./10_version_history.md)** for complete changelog and **[Architectural Changes](./11_architectural_changes_2026_01_29.md)** for design/architecture changes.
