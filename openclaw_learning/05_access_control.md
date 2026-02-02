@@ -1,6 +1,6 @@
 # Access Control & Security
 
-Clawdbot implements a comprehensive security model spanning user authentication, tool execution sandboxing, and audit capabilities. This document covers the multi-layered access control architecture that protects against unauthorized access and dangerous operations.
+OpenClaw implements a comprehensive security model spanning user authentication, tool execution sandboxing, and audit capabilities. This document covers the multi-layered access control architecture that protects against unauthorized access and dangerous operations.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -16,7 +16,7 @@ Clawdbot implements a comprehensive security model spanning user authentication,
 
 ## Overview
 
-Clawdbot security operates across four layers:
+OpenClaw security operates across four layers:
 
 ```
 Layer 1: Channel Access Control
@@ -26,7 +26,7 @@ Layer 1: Channel Access Control
 
 Layer 2: Tool Execution
 ├── Sandbox tool policy (allow/deny lists)
-├── Exec approvals (~/.clawdbot/exec-approvals.json)
+├── Exec approvals (~/.openclaw/exec-approvals.json)
 └── Elevated execution (sudo-like capability)
 
 Layer 3: Gateway & Remote Access
@@ -35,7 +35,7 @@ Layer 3: Gateway & Remote Access
 └── Browser control tokens
 
 Layer 4: Audit & Compliance
-├── Security audit (clawdbot security audit)
+├── Security audit (openclaw security audit)
 ├── File permission checks
 └── Attack surface analysis
 ```
@@ -59,9 +59,9 @@ const PAIRING_PENDING_MAX = 3; // Maximum pending requests
 ### Workflow
 
 1. **User requests pairing** via DM to the bot
-2. **Bot generates 8-char code** (e.g., `AB3K7MNP`) and stores in `~/.config/clawdbot/oauth/<channel>-pairing.json`
-3. **User approves code** by running `clawdbot pairing approve AB3K7MNP` on the server
-4. **User ID added to allowlist** in `~/.config/clawdbot/oauth/<channel>-allowFrom.json`
+2. **Bot generates 8-char code** (e.g., `AB3K7MNP`) and stores in `~/.config/openclaw/oauth/<channel>-pairing.json`
+3. **User approves code** by running `openclaw pairing approve AB3K7MNP` on the server
+4. **User ID added to allowlist** in `~/.config/openclaw/oauth/<channel>-allowFrom.json`
 5. **Pairing request removed** from pending store
 
 ### Pairing Request Structure
@@ -115,12 +115,12 @@ function isExpired(entry: PairingRequest, nowMs: number): boolean {
 
 **Pairing Requests:**
 ```
-~/.config/clawdbot/oauth/<channel>-pairing.json
+~/.config/openclaw/oauth/<channel>-pairing.json
 ```
 
 **Allowlist (Post-Approval):**
 ```
-~/.config/clawdbot/oauth/<channel>-allowFrom.json
+~/.config/openclaw/oauth/<channel>-allowFrom.json
 ```
 
 **From `src/pairing/pairing-store.ts:60-69`:**
@@ -143,13 +143,13 @@ function resolveAllowFromPath(
 
 ```bash
 # List pending pairing requests
-clawdbot pairing list
+openclaw pairing list
 
 # Approve a pairing code
-clawdbot pairing approve AB3K7MNP
+openclaw pairing approve AB3K7MNP
 
 # Revoke an approved user
-clawdbot pairing revoke <user-id>
+openclaw pairing revoke <user-id>
 ```
 
 ---
@@ -161,8 +161,8 @@ Allowlists determine who can interact with the bot on each channel. They support
 ### Allowlist Sources
 
 **Two sources** (merged at runtime):
-1. **Config allowlist** (`channels.<provider>.dm.allowFrom` in `.clawdbot/config.yaml`)
-2. **Pairing store** (`~/.config/clawdbot/oauth/<channel>-allowFrom.json`)
+1. **Config allowlist** (`channels.<provider>.dm.allowFrom` in `.openclaw/config.yaml`)
+2. **Pairing store** (`~/.config/openclaw/oauth/<channel>-allowFrom.json`)
 
 **From `src/security/audit.ts:452-464`:**
 ```typescript
@@ -209,7 +209,7 @@ Each channel supports three DM policies:
 
 **Configuration:**
 ```yaml
-# .clawdbot/config.yaml
+# .openclaw/config.yaml
 channels:
   discord:
     dm:
@@ -269,7 +269,7 @@ Exec approvals control which commands the `bash` tool can execute. This prevents
 
 ### Approval File
 
-**Location:** `~/.clawdbot/exec-approvals.json`
+**Location:** `~/.openclaw/exec-approvals.json`
 
 **Structure (from `src/infra/exec-approvals.ts:32-40`):**
 ```typescript
@@ -416,7 +416,7 @@ export const DEFAULT_TOOL_DENY = [
 
 **Global:**
 ```yaml
-# .clawdbot/config.yaml
+# .openclaw/config.yaml
 tools:
   sandbox:
     tools:
@@ -450,7 +450,7 @@ agents:
 **From `src/agents/sandbox/tool-policy.ts:53-124`:**
 ```typescript
 export function resolveSandboxToolPolicyForAgent(
-  cfg?: ClawdbotConfig,
+  cfg?: OpenClawConfig,
   agentId?: string
 ): SandboxToolPolicyResolved {
   const agentConfig = cfg && agentId ? resolveAgentConfig(cfg, agentId) : undefined;
@@ -512,7 +512,7 @@ Elevated execution grants specific users permission to run commands that would n
 ### Configuration
 
 ```yaml
-# .clawdbot/config.yaml
+# .openclaw/config.yaml
 tools:
   elevated:
     enabled: true
@@ -528,7 +528,7 @@ tools:
 
 **From `src/security/audit.ts:396-425`:**
 ```typescript
-function collectElevatedFindings(cfg: ClawdbotConfig): SecurityAuditFinding[] {
+function collectElevatedFindings(cfg: OpenClawConfig): SecurityAuditFinding[] {
   const findings: SecurityAuditFinding[] = [];
   const enabled = cfg.tools?.elevated?.enabled;
   const allowFrom = cfg.tools?.elevated?.allowFrom ?? {};
@@ -562,16 +562,16 @@ function collectElevatedFindings(cfg: ClawdbotConfig): SecurityAuditFinding[] {
 
 ## Security Audit
 
-Clawdbot includes a comprehensive security audit tool that scans configuration for vulnerabilities.
+OpenClaw includes a comprehensive security audit tool that scans configuration for vulnerabilities.
 
 ### Running Audit
 
 ```bash
 # Basic audit
-clawdbot security audit
+openclaw security audit
 
 # Deep audit (includes gateway connectivity test)
-clawdbot security audit --deep
+openclaw security audit --deep
 ```
 
 ### Audit Checks
@@ -634,8 +634,8 @@ export type SecurityAuditSeverity = "info" | "warn" | "critical";
   checkId: "fs.state_dir.perms_world_writable",
   severity: "critical",
   title: "State dir is world-writable",
-  detail: `~/.clawdbot mode=0o777; other users can write into your Clawdbot state.`,
-  remediation: `chmod 700 ~/.clawdbot`,
+  detail: `~/.openclaw mode=0o777; other users can write into your OpenClaw state.`,
+  remediation: `chmod 700 ~/.openclaw`,
 }
 ```
 
@@ -668,7 +668,7 @@ async function collectFilesystemFindings(params: {
         checkId: "fs.state_dir.perms_world_writable",
         severity: "critical",
         title: "State dir is world-writable",
-        detail: `${params.stateDir} mode=${formatOctal(bits)}; other users can write into your Clawdbot state.`,
+        detail: `${params.stateDir} mode=${formatOctal(bits)}; other users can write into your OpenClaw state.`,
         remediation: `chmod 700 ${params.stateDir}`,
       });
     }
@@ -721,14 +721,14 @@ async function collectFilesystemFindings(params: {
 - **`src/security/external-content.ts`** - External content safety checks
 
 ### CLI
-- **`src/cli/pairing-cli.ts`** - `clawdbot pairing` command
-- **`src/cli/security-cli.ts`** - `clawdbot security audit` command
+- **`src/cli/pairing-cli.ts`** - `openclaw pairing` command
+- **`src/cli/security-cli.ts`** - `openclaw security audit` command
 
 ### Storage Locations
-- **Pairing store:** `~/.config/clawdbot/oauth/<channel>-pairing.json`
-- **Allowlist store:** `~/.config/clawdbot/oauth/<channel>-allowFrom.json`
-- **Exec approvals:** `~/.clawdbot/exec-approvals.json`
-- **Config file:** `.clawdbot/config.yaml`
+- **Pairing store:** `~/.config/openclaw/oauth/<channel>-pairing.json`
+- **Allowlist store:** `~/.config/openclaw/oauth/<channel>-allowFrom.json`
+- **Exec approvals:** `~/.openclaw/exec-approvals.json`
+- **Config file:** `.openclaw/config.yaml`
 
 ---
 
@@ -747,10 +747,10 @@ async function collectFilesystemFindings(params: {
 4. **Prefer skill-specific patterns** - `git*` instead of `*`
 
 ### Filesystem
-1. **Protect state directory** - `chmod 700 ~/.clawdbot`
-2. **Protect config file** - `chmod 600 .clawdbot/config.yaml`
+1. **Protect state directory** - `chmod 700 ~/.openclaw`
+2. **Protect config file** - `chmod 600 .openclaw/config.yaml`
 3. **Avoid symlinks** - Can introduce unexpected trust boundaries
-4. **Run security audit regularly** - `clawdbot security audit --deep`
+4. **Run security audit regularly** - `openclaw security audit --deep`
 
 ### Gateway & Remote Access
 1. **Always use auth tokens on non-loopback bindings** - Never expose unauthenticated gateways

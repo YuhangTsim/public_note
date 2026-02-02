@@ -1,8 +1,8 @@
-# Clawdbot/Moltbot Learning Documentation
+# OpenClaw/OpenClaw Learning Documentation
 
-> **🔄 IMPORTANT REBRAND (2026.1.29):** The project was renamed from **Clawdbot** to **Moltbot**. The npm package is now `moltbot`, documentation moved to https://docs.molt.bot, but the GitHub repository URL remains the same. See **[Version History](./10_version_history.md)** for migration details.
+> **🔄 IMPORTANT REBRAND (2026.1.29):** The project was renamed from **Clawdbot** to **OpenClaw**. The npm package is now `openclaw`, documentation moved to https://docs.openclaw.dev, but the GitHub repository URL remains the same. See **[Version History](./10_version_history.md)** for migration details.
 
-Comprehensive documentation for **Clawdbot/Moltbot** - a personal AI assistant platform with multi-channel support, featuring gateway-based architecture, extensive security controls, and powerful skill extensibility.
+Comprehensive documentation for **Clawdbot/OpenClaw** - a personal AI assistant platform with multi-channel support, featuring gateway-based architecture, extensive security controls, and powerful skill extensibility.
 
 ---
 
@@ -23,16 +23,16 @@ Comprehensive documentation for **Clawdbot/Moltbot** - a personal AI assistant p
 
 ### Version History & Updates
 
-8. **[Version History](./10_version_history.md)** - Release notes, changelog, migration guides (Clawdbot → Moltbot rebrand)
+8. **[Version History](./10_version_history.md)** - Release notes, changelog, migration guides (Clawdbot → OpenClaw rebrand)
 9. **[Architectural Changes (v2026.1.29)](./11_architectural_changes_2026_01_29.md)** - Design & architecture changes in latest release
 
 ---
 
 ## 🚀 Quick Start
 
-### What is Clawdbot/Moltbot?
+### What is OpenClaw?
 
-Clawdbot/Moltbot (renamed in 2026.1.29) is a **self-hosted AI assistant platform** that connects Claude AI to multiple messaging platforms (WhatsApp, Telegram, Discord, Slack, iMessage, Signal, etc.) with a focus on security, extensibility, and developer experience.
+OpenClaw (renamed from Clawdbot in 2026.1.29) is a **self-hosted AI assistant platform** that connects Claude AI to multiple messaging platforms (WhatsApp, Telegram, Discord, Slack, iMessage, Signal, etc.) with a focus on security, extensibility, and developer experience.
 
 **Key Differentiators:**
 - **Gateway-based architecture** - WebSocket control plane separates runtime from channels
@@ -48,7 +48,7 @@ Clawdbot/Moltbot (renamed in 2026.1.29) is a **self-hosted AI assistant platform
 
 ### For First-Time Learners
 
-Start here to understand Clawdbot from the ground up:
+Start here to understand OpenClaw from the ground up:
 
 1. **[Overview](./01_overview.md)** - Understand the project structure and architecture
 2. **[Prompt System](./02_prompt_system.md)** - Learn how to configure agent behavior
@@ -82,7 +82,7 @@ Deep dive into extensibility APIs:
 
 ### Gateway Architecture
 
-Clawdbot uses a **gateway-based architecture** where:
+OpenClaw uses a **gateway-based architecture** where:
 - **Gateway** - WebSocket server managing sessions, routing, and state
 - **Channels** - Platform-specific adapters (Discord, Telegram, etc.)
 - **Agent Runtime** - Pi coding agent execution environment
@@ -103,7 +103,7 @@ See: [Overview - Architecture](./01_overview.md#architecture)
 
 ### Workspace Files
 
-Clawdbot/Moltbot reads markdown files from `.moltbot/` (or legacy `.clawdbot/`) to configure agent behavior:
+OpenClaw/OpenClaw reads markdown files from `.openclaw/` (or legacy `.openclaw/`) to configure agent behavior:
 
 | File | Purpose |
 |------|---------|
@@ -113,7 +113,7 @@ Clawdbot/Moltbot reads markdown files from `.moltbot/` (or legacy `.clawdbot/`) 
 | `PLAN.md` | Current task plans and priorities |
 | `SESSION.md` | Per-session context (ephemeral) |
 
-> **Note:** Config directory changed from `~/.clawdbot/` to `~/.moltbot/` in version 2026.1.29. Legacy paths are auto-migrated.
+> **Note:** Config directory changed from `~/.clawdbot/` to `~/.openclaw/` in version 2026.1.29. Legacy paths are auto-migrated.
 
 See: [Prompt System](./02_prompt_system.md)
 
@@ -125,7 +125,7 @@ Skills teach the agent how to use specific tools or APIs through markdown docume
 ---
 name: nano-pdf
 description: Edit PDFs with natural-language instructions
-metadata: {"clawdbot":{"requires":{"bins":["nano-pdf"]},"install":[...]}}
+metadata: {"openclaw":{"requires":{"bins":["nano-pdf"]},"install":[...]}}
 ---
 
 # nano-pdf
@@ -166,7 +166,7 @@ User: "pair"
 Bot: "Your pairing code is: AB3K7MNP (expires in 1 hour)"
 
 # 3. On server, approve the pairing
-$ clawdbot pairing approve AB3K7MNP
+$ openclaw pairing approve AB3K7MNP
 ✓ Approved user 123456789012345678
 
 # 4. User is now authorized to DM the bot
@@ -180,13 +180,13 @@ See: [Access Control - DM Pairing](./05_access_control.md#dm-pairing-system)
 # 1. Agent attempts to run bash command
 Agent: Running `git status`...
 
-# 2. If not in allowlist, Clawdbot prompts for approval
-Clawdbot: Approve 'git status'? (y/n)
+# 2. If not in allowlist, OpenClaw prompts for approval
+OpenClaw: Approve 'git status'? (y/n)
 
 # 3. User approves
 User: y
 
-# 4. Command executes and is added to ~/.clawdbot/exec-approvals.json
+# 4. Command executes and is added to ~/.openclaw/exec-approvals.json
 ✓ Command approved and executed
 
 # 5. Future `git` commands auto-approved (pattern matching)
@@ -201,7 +201,7 @@ See: [Access Control - Exec Approvals](./05_access_control.md#exec-approvals-bas
 ---
 name: my-tool
 description: Internal deployment automation CLI
-metadata: {"clawdbot":{"requires":{"bins":["my-tool"]},"install":[{"kind":"download","url":"https://releases.company.com/my-tool-latest.tar.gz"}]}}
+metadata: {"openclaw":{"requires":{"bins":["my-tool"]},"install":[{"kind":"download","url":"https://releases.company.com/my-tool-latest.tar.gz"}]}}
 ---
 
 # my-tool
@@ -229,10 +229,10 @@ See: [Skills System - Creating Custom Skills](./04_skills_system.md#usage-exampl
 
 ```bash
 # Basic audit (config only)
-$ moltbot security audit  # or 'clawdbot' for legacy compat
+$ openclaw security audit  # or 'openclaw' for legacy compat
 
 # Deep audit (includes live gateway probe)
-$ moltbot security audit --deep
+$ openclaw security audit --deep
 
 # Example output:
 Security Audit Report
@@ -247,7 +247,7 @@ DMs are open; anyone can message the bot
 
 [CRITICAL] fs.config.perms_world_readable
 Config file is world-readable (mode=0644)
-→ Remediation: chmod 600 .clawdbot/config.yaml
+→ Remediation: chmod 600 .openclaw/config.yaml
 ```
 
 See: [Access Control - Security Audit](./05_access_control.md#security-audit)
@@ -257,7 +257,7 @@ See: [Access Control - Security Audit](./05_access_control.md#security-audit)
 ## 📁 Repository Structure
 
 ```
-clawdbot/
+openclaw/
 ├── src/
 │   ├── agents/          # Agent runtime, tools, skills
 │   │   ├── pi-embedded-runner/  # Core agent execution
@@ -276,7 +276,7 @@ clawdbot/
 ├── skills/              # Bundled skills
 ├── extensions/          # Plugin system
 ├── docs/                # Official documentation
-└── .clawdbot/           # Workspace files (SOUL.md, etc.)
+└── .openclaw/           # Workspace files (SOUL.md, etc.)
 ```
 
 See: [Overview - Directory Structure](./01_overview.md#directory-structure)
@@ -285,13 +285,13 @@ See: [Overview - Directory Structure](./01_overview.md#directory-structure)
 
 ## 🔗 External Resources
 
-- **Official Repository:** https://github.com/clawdbot/clawdbot (repo name unchanged)
-- **Official Documentation:** https://docs.molt.bot (formerly https://docs.clawd.bot)
-- **NPM Package:** https://www.npmjs.com/package/moltbot (formerly `clawdbot`)
+- **Official Repository:** https://github.com/openclaw/openclaw (repo name unchanged)
+- **Official Documentation:** https://docs.openclaw.dev (formerly https://docs.clawd.bot)
+- **NPM Package:** https://www.npmjs.com/package/openclaw (formerly `clawdbot`)
 - **Pi Coding Agent:** https://github.com/mariozechner/pi-coding-agent
 - **Claude API Docs:** https://docs.anthropic.com/claude/reference
-- **Discord Bot Setup:** https://docs.molt.bot/channels/discord
-- **Tailscale Integration:** https://docs.molt.bot/gateway/tailscale
+- **Discord Bot Setup:** https://docs.openclaw.dev/channels/discord
+- **Tailscale Integration:** https://docs.openclaw.dev/gateway/tailscale
 
 ---
 
@@ -300,7 +300,7 @@ See: [Overview - Directory Structure](./01_overview.md#directory-structure)
 Found an error or want to add content?
 
 1. Fork [YuhangTsim/public_note](https://github.com/YuhangTsim/public_note)
-2. Edit files in `clawdbot_learning/`
+2. Edit files in `openclaw_learning/`
 3. Submit a pull request
 
 ---
@@ -316,7 +316,7 @@ Found an error or want to add content?
 | 05_access_control.md | 2026-01-26 | DM pairing, allowlists, exec approvals, sandbox, audit |
 | 06_task_completion.md | 2026-01-26 | Run lifecycle, completion detection, session management |
 | 09_session_storage.md | 2026-01-26 | Session persistence, JSONL logging, pruning logic |
-| **10_version_history.md** | **2026-01-29** | **Version history, changelog, Clawdbot→Moltbot migration** |
+| **10_version_history.md** | **2026-01-29** | **Version history, changelog, OpenClaw→OpenClaw migration** |
 | **11_architectural_changes_2026_01_29.md** | **2026-01-29** | **Architectural & design changes in v2026.1.29** |
 
 ---
@@ -326,9 +326,9 @@ Found an error or want to add content?
 ### Security Warnings
 
 1. **Never use `dmPolicy: open` in production** - Always use `allowlist` or `disabled`
-2. **Protect your config file** - `chmod 600 ~/.moltbot/config.yaml` (or `~/.clawdbot/` for legacy)
+2. **Protect your config file** - `chmod 600 ~/.openclaw/config.yaml` (or `~/.openclaw/` for legacy)
 3. **Review exec-approvals regularly** - Remove unused command patterns
-4. **Run security audit often** - `moltbot security audit --deep`
+4. **Run security audit often** - `openclaw security audit --deep`
 5. **Use strong tokens** - 32+ random characters for gateway auth
 6. **⚠️ Gateway auth now required** - As of v2026.1.29, `auth: none` is removed (breaking change)
 
@@ -383,7 +383,7 @@ agents:
 
 ### Auto-Allow Safe Commands
 
-Edit `~/.moltbot/exec-approvals.json` (or `~/.clawdbot/` for legacy):
+Edit `~/.openclaw/exec-approvals.json` (or `~/.openclaw/` for legacy):
 ```json
 {
   "agents": {
@@ -403,7 +403,7 @@ Edit `~/.moltbot/exec-approvals.json` (or `~/.clawdbot/` for legacy):
 
 **Happy Learning! 🚀**
 
-For questions or issues, consult the official Moltbot documentation at https://docs.molt.bot or community resources.
+For questions or issues, consult the official OpenClaw documentation at https://docs.molt.bot or community resources.
 
 ---
 
@@ -411,7 +411,7 @@ For questions or issues, consult the official Moltbot documentation at https://d
 
 **Latest Update: 2026-01-29**
 
-- **Major Rebrand:** Clawdbot → Moltbot (npm package, CLI, docs all renamed)
+- **Major Rebrand:** Clawdbot → OpenClaw (npm package, CLI, docs all renamed)
 - **New Channels:** Twitch plugin, Google Chat (beta)
 - **Security:** Gateway auth now required (breaking change), SSH hardening, Windows ACL audits
 - **Providers:** Venice AI, Xiaomi MiMo support

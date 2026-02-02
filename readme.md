@@ -50,8 +50,8 @@ In-depth analysis of **Roo Code** (VS Code extension) architecture, with focus o
 
 See [roocode_learning/README.md](./roocode_learning/README.md) for detailed documentation map.
 
-### [clawdbot_learning/](./clawdbot_learning/)
-Comprehensive documentation for **Clawdbot** - a personal AI assistant platform with multi-channel support, gateway-based architecture, and extensive security controls.
+### [openclaw_learning/](./openclaw_learning/)
+Comprehensive documentation for **OpenClaw** - a personal AI assistant platform with multi-channel support, gateway-based architecture, and extensive security controls.
 
 **Topics covered:**
 - Gateway architecture and WebSocket control plane
@@ -64,14 +64,14 @@ Comprehensive documentation for **Clawdbot** - a personal AI assistant platform 
 - Agent run lifecycle and task completion detection
 
 **Key documents:**
-- [01_overview.md](./clawdbot_learning/01_overview.md) - Architecture and tech stack
-- [02_prompt_system.md](./clawdbot_learning/02_prompt_system.md) - Workspace files and prompt engineering
-- [03_tool_system.md](./clawdbot_learning/03_tool_system.md) - Tool execution and approvals
-- [04_skills_system.md](./clawdbot_learning/04_skills_system.md) - Skills discovery and installation
-- [05_access_control.md](./clawdbot_learning/05_access_control.md) - DM pairing, allowlists, security audit
-- [06_task_completion.md](./clawdbot_learning/06_task_completion.md) - Agent run lifecycle and session management
+- [01_overview.md](./openclaw_learning/01_overview.md) - Architecture and tech stack
+- [02_prompt_system.md](./openclaw_learning/02_prompt_system.md) - Workspace files and prompt engineering
+- [03_tool_system.md](./openclaw_learning/03_tool_system.md) - Tool execution and approvals
+- [04_skills_system.md](./openclaw_learning/04_skills_system.md) - Skills discovery and installation
+- [05_access_control.md](./openclaw_learning/05_access_control.md) - DM pairing, allowlists, security audit
+- [06_task_completion.md](./openclaw_learning/06_task_completion.md) - Agent run lifecycle and session management
 
-See [clawdbot_learning/README.md](./clawdbot_learning/README.md) for complete documentation index.
+See [openclaw_learning/README.md](./openclaw_learning/README.md) for complete documentation index.
 
 ### [oh_my_opencode_learning/](./oh_my_opencode_learning/)
 Deep dive into **Oh My OpenCode** (OMO), a "battery-included" orchestration suite for OpenCode that introduces the Sisyphus agent.
@@ -117,7 +117,7 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 - **Primary agents** (user-facing): build, plan
 - **Specialized subagents**: explore (contextual grep), oracle (expert advisor), librarian (reference search)
 - **Agent orchestration**: Parallel execution, delegation patterns, background tasks
-- **Gateway-based architecture** (Clawdbot): WebSocket control plane, multi-channel routing
+- **Gateway-based architecture** (OpenClaw): WebSocket control plane, multi-channel routing
 
 ### Protocol Evolution
 - **XML Protocol**: Tools embedded in system prompt (deprecated)
@@ -141,7 +141,7 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 ### Security & Access Control
 - **DM Pairing**: Ephemeral codes for user authentication
 - **Allowlist Matching**: Platform-specific identifier matching
-- **Exec Approvals**: Bash command approval system (~/.clawdbot/exec-approvals.json)
+- **Exec Approvals**: Bash command approval system (~/.openclaw/exec-approvals.json)
 - **Sandbox Policies**: Tool allow/deny lists for isolated execution
 - **Security Audit**: Automated vulnerability scanning
 
@@ -164,10 +164,10 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 2. Read [roocode_learning/native_protocol_and_completion.md](./roocode_learning/native_protocol_and_completion.md) for protocol details
 3. Explore mode prompts: [architect_mode_prompt.md](./roocode_learning/architect_mode_prompt.md) and [code_mode_prompt.md](./roocode_learning/code_mode_prompt.md)
 
-### For Understanding Clawdbot:
-1. Read [clawdbot_learning/01_overview.md](./clawdbot_learning/01_overview.md) for architecture overview
-2. Explore [clawdbot_learning/02_prompt_system.md](./clawdbot_learning/02_prompt_system.md) for workspace file configuration
-3. Review [clawdbot_learning/05_access_control.md](./clawdbot_learning/05_access_control.md) for security setup
+### For Understanding OpenClaw:
+1. Read [openclaw_learning/01_overview.md](./openclaw_learning/01_overview.md) for architecture overview
+2. Explore [openclaw_learning/02_prompt_system.md](./openclaw_learning/02_prompt_system.md) for workspace file configuration
+3. Review [openclaw_learning/05_access_control.md](./openclaw_learning/05_access_control.md) for security setup
 
 ### For Comparative Research:
 1. Review [coding_agent_research/](./coding_agent_research/) for context management strategies
@@ -177,7 +177,7 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 
 - **OpenCode Learning**: 13+ comprehensive documents covering architecture, agents, tools, and prompts
 - **Roo Code Learning**: 7 documents totaling ~4,375 lines of in-depth analysis
-- **Clawdbot Learning**: 6+ documents covering gateway architecture, security, skills, and agent lifecycle
+- **OpenClaw Learning**: 6+ documents covering gateway architecture, security, skills, and agent lifecycle
 - **Oh My OpenCode Learning**: 4 documents detailing the Sisyphus orchestrator and delegation system
 - **Coding Agent Research**: Analysis of 10+ open-source coding agents
 
@@ -192,8 +192,8 @@ See [coding_agent_research/readme.md](./coding_agent_research/readme.md) for res
 - **VS Code Extension**: [Search "Roo Code" in VS Code Marketplace](https://marketplace.visualstudio.com/)
 - **Agent Skills Spec**: https://agentskills.io/
 
-### Clawdbot
-- **GitHub**: [clawdbot/clawdbot](https://github.com/clawdbot/clawdbot)
+### OpenClaw
+- **GitHub**: [openclaw/openclaw](https://github.com/openclaw/openclaw)
 - **Pi Coding Agent**: [mariozechner/pi-coding-agent](https://github.com/mariozechner/pi-coding-agent)
 
 ### Oh My OpenCode

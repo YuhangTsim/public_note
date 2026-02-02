@@ -1,7 +1,7 @@
-# Clawdbot Repository Research Report
+# OpenClaw Repository Research Report
 
 **Date:** January 26, 2026  
-**Repository:** https://github.com/clawdbot/clawdbot  
+**Repository:** https://github.com/openclaw/openclaw  
 **License:** MIT  
 **Current Version:** 2026.1.25
 
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-**Clawdbot** is a personal AI assistant platform that you run on your own devices. It connects to multiple messaging channels (WhatsApp, Telegram, Discord, Slack, Signal, iMessage, etc.) and provides an AI assistant powered by Claude/GPT models. The gateway acts as a control plane, while the product is the assistant itself.
+**OpenClaw** is a personal AI assistant platform that you run on your own devices. It connects to multiple messaging channels (WhatsApp, Telegram, Discord, Slack, Signal, iMessage, etc.) and provides an AI assistant powered by Claude/GPT models. The gateway acts as a control plane, while the product is the assistant itself.
 
 Think of it as a **self-hosted AI assistant router** that brings conversational AI to all your existing communication channels.
 
@@ -101,13 +101,13 @@ Each channel adapter:
 
 #### 4. **CLI Interface** (`src/cli/`)
 Primary commands:
-- `clawdbot gateway` - Start the gateway server
-- `clawdbot agent` - Run the AI agent (direct mode)
-- `clawdbot message send` - Send messages to channels
-- `clawdbot channels login` - Authenticate with messaging platforms
-- `clawdbot onboard` - Setup wizard
-- `clawdbot doctor` - Health checks and diagnostics
-- `clawdbot config` - Configuration management
+- `openclaw gateway` - Start the gateway server
+- `openclaw agent` - Run the AI agent (direct mode)
+- `openclaw message send` - Send messages to channels
+- `openclaw channels login` - Authenticate with messaging platforms
+- `openclaw onboard` - Setup wizard
+- `openclaw doctor` - Health checks and diagnostics
+- `openclaw config` - Configuration management
 
 #### 5. **Media Pipeline** (`src/media/`)
 - **Store**: Local media storage and caching
@@ -246,11 +246,11 @@ src/
 - **`package.json`** - Node.js package manifest, scripts, dependencies
 - **`tsconfig.json`** - TypeScript compiler configuration
 - **`vitest.config.ts`** - Test configuration
-- **`~/.clawdbot/clawdbot.json`** - User configuration (runtime)
+- **`~/.openclaw/openclaw.json`** - User configuration (runtime)
 - **`.env`** - Environment variables (optional)
 
 ### Documentation (`docs/`)
-Comprehensive Mintlify documentation at https://docs.clawd.bot/
+Comprehensive Mintlify documentation at https://docs.openclaw.dev/
 - Channels guides (`docs/channels/`)
 - Platform guides (`docs/platforms/`)
 - Gateway operations (`docs/gateway/`)
@@ -271,9 +271,9 @@ Plugin-based extensions for:
 ### 1. **Gateway Startup Flow**
 
 ```
-User runs: clawdbot gateway
+User runs: openclaw gateway
 
-1. Load configuration (~/.clawdbot/clawdbot.json + env vars)
+1. Load configuration (~/.openclaw/openclaw.json + env vars)
 2. Start Gateway WebSocket server (default: ws://127.0.0.1:18789)
 3. Initialize channel adapters (WhatsApp, Telegram, Discord, etc.)
 4. Load plugins and extensions
@@ -364,14 +364,14 @@ Sessions are isolated conversation contexts:
 - **Non-Main Sessions**: Can run in Docker sandboxes for security
 
 Session data stored in:
-- `~/.clawdbot/sessions/` - Pi agent session files
-- `~/.clawdbot/agents/{agentId}/sessions/` - Agent-specific sessions
+- `~/.openclaw/sessions/` - Pi agent session files
+- `~/.openclaw/agents/{agentId}/sessions/` - Agent-specific sessions
 
 ### 5. **Configuration System**
 
 Configuration is hierarchical:
 1. **Defaults** - Hard-coded sensible defaults
-2. **Config File** - `~/.clawdbot/clawdbot.json`
+2. **Config File** - `~/.openclaw/openclaw.json`
 3. **Environment Variables** - Override config (e.g., `TELEGRAM_BOT_TOKEN`)
 4. **CLI Flags** - Highest priority (e.g., `--port 8080`)
 
@@ -416,8 +416,8 @@ Example configuration structure:
 
 ```bash
 # Clone repository
-git clone https://github.com/clawdbot/clawdbot.git
-cd clawdbot
+git clone https://github.com/openclaw/openclaw.git
+cd openclaw
 
 # Install dependencies
 pnpm install
@@ -429,7 +429,7 @@ pnpm ui:build
 pnpm build
 
 # Run onboarding wizard
-pnpm clawdbot onboard --install-daemon
+pnpm openclaw onboard --install-daemon
 ```
 
 ### Development Commands
@@ -439,7 +439,7 @@ pnpm clawdbot onboard --install-daemon
 pnpm gateway:watch
 
 # Run specific CLI command
-pnpm clawdbot <command>
+pnpm openclaw <command>
 
 # Run tests
 pnpm test
@@ -492,7 +492,7 @@ pnpm android:assemble
 ### 1. **Plugin-Based Architecture**
 - Core functionality in `src/`
 - Extensions in `extensions/` as workspace packages
-- Plugin SDK exposed via `clawdbot/plugin-sdk`
+- Plugin SDK exposed via `openclaw/plugin-sdk`
 - Dynamic plugin loading via registry
 
 ### 2. **Dependency Injection**
@@ -534,7 +534,7 @@ pnpm android:assemble
 
 1. **DM Pairing** (`dmPolicy="pairing"`):
    - Unknown senders receive pairing code
-   - Must be approved via `clawdbot pairing approve`
+   - Must be approved via `openclaw pairing approve`
    - Prevents unauthorized access
 
 2. **Allowlists**:
@@ -548,7 +548,7 @@ pnpm android:assemble
    - Isolated file system
 
 4. **Credential Storage**:
-   - Stored in `~/.clawdbot/credentials/`
+   - Stored in `~/.openclaw/credentials/`
    - Platform-specific auth (OAuth, tokens, QR codes)
    - Never committed to git
 
@@ -645,43 +645,43 @@ Why: Tests near code they test
 
 ### Starting the Gateway
 ```bash
-clawdbot gateway run --port 18789 --verbose
+openclaw gateway run --port 18789 --verbose
 ```
 
 ### Sending a Message
 ```bash
-clawdbot message send --to +1234567890 --message "Hello!"
+openclaw message send --to +1234567890 --message "Hello!"
 ```
 
 ### Running the Agent (Direct)
 ```bash
-clawdbot agent --message "What's the weather?" --thinking high
+openclaw agent --message "What's the weather?" --thinking high
 ```
 
 ### Logging into a Channel
 ```bash
 # WhatsApp (QR code)
-clawdbot channels login whatsapp
+openclaw channels login whatsapp
 
 # Telegram (with token)
-clawdbot config set channels.telegram.botToken "123456:ABCDEF"
+openclaw config set channels.telegram.botToken "123456:ABCDEF"
 ```
 
 ### Health Check
 ```bash
-clawdbot doctor
+openclaw doctor
 ```
 
 ### Configuration
 ```bash
 # View current config
-clawdbot config list
+openclaw config list
 
 # Set a value
-clawdbot config set agent.model "anthropic/claude-opus-4-5"
+openclaw config set agent.model "anthropic/claude-opus-4-5"
 
 # Get a value
-clawdbot config get agent.model
+openclaw config get agent.model
 ```
 
 ---
@@ -696,7 +696,7 @@ pnpm build
 ```
 
 ### Installation Methods
-1. **npm Global**: `npm install -g clawdbot@latest`
+1. **npm Global**: `npm install -g openclaw@latest`
 2. **From Source**: `git clone && pnpm install && pnpm build`
 3. **Docker**: `docker-compose up` (see `docker-compose.yml`)
 4. **Nix**: Declarative config via Nix flakes
@@ -706,7 +706,7 @@ pnpm build
 #### macOS App
 - Build: `pnpm mac:package`
 - Requires: Xcode, signing certificate
-- Output: `dist/Clawdbot.app`
+- Output: `dist/OpenClaw.app`
 - Install: Drag to Applications folder
 
 #### iOS App
@@ -722,7 +722,7 @@ pnpm build
 
 ### Daemon Installation
 ```bash
-clawdbot onboard --install-daemon
+openclaw onboard --install-daemon
 ```
 
 This installs a system service:
@@ -735,16 +735,16 @@ This installs a system service:
 ## Learning Resources
 
 ### Official Documentation
-- **Main Docs**: https://docs.clawd.bot
-- **Getting Started**: https://docs.clawd.bot/start/getting-started
-- **Configuration**: https://docs.clawd.bot/gateway/configuration
-- **Channels**: https://docs.clawd.bot/channels
-- **Architecture**: https://docs.clawd.bot/concepts/architecture
+- **Main Docs**: https://docs.openclaw.dev
+- **Getting Started**: https://docs.openclaw.dev/start/getting-started
+- **Configuration**: https://docs.openclaw.dev/gateway/configuration
+- **Channels**: https://docs.openclaw.dev/channels
+- **Architecture**: https://docs.openclaw.dev/concepts/architecture
 
 ### Community
-- **Discord**: https://discord.gg/clawd
-- **GitHub**: https://github.com/clawdbot/clawdbot
-- **Website**: https://clawdbot.com
+- **Discord**: https://discord.gg/openclaw
+- **GitHub**: https://github.com/openclaw/openclaw
+- **Website**: https://openclaw.com
 
 ### Key Files to Read
 1. `README.md` - Overview and quick start
@@ -759,7 +759,7 @@ This installs a system service:
 ## Development Tips
 
 ### 1. **Use the Wizard**
-The onboarding wizard (`clawdbot onboard`) is the easiest way to get started. It handles:
+The onboarding wizard (`openclaw onboard`) is the easiest way to get started. It handles:
 - Gateway setup
 - Channel configuration
 - Model selection
@@ -774,7 +774,7 @@ Auto-reloads on TypeScript changes.
 ### 3. **Check Logs**
 Gateway logs show everything:
 ```bash
-tail -f ~/.clawdbot/logs/gateway.log
+tail -f ~/.openclaw/logs/gateway.log
 ```
 
 On macOS:
@@ -784,7 +784,7 @@ On macOS:
 
 ### 4. **Use Doctor for Diagnostics**
 ```bash
-clawdbot doctor
+openclaw doctor
 ```
 Checks for misconfigurations, security issues, and provides migration guidance.
 
@@ -826,10 +826,10 @@ The codebase follows consistent patterns:
 ## Quick Reference
 
 ### File Locations
-- Config: `~/.clawdbot/clawdbot.json`
-- Credentials: `~/.clawdbot/credentials/`
-- Sessions: `~/.clawdbot/sessions/`
-- Logs: `~/.clawdbot/logs/`
+- Config: `~/.openclaw/openclaw.json`
+- Credentials: `~/.openclaw/credentials/`
+- Sessions: `~/.openclaw/sessions/`
+- Logs: `~/.openclaw/logs/`
 - Workspace: `~/clawd/` (default)
 
 ### Default Ports
@@ -850,7 +850,7 @@ The codebase follows consistent patterns:
 
 ## Conclusion
 
-Clawdbot is a **comprehensive personal AI assistant platform** that brings the power of modern LLMs to your existing communication channels. Its architecture is:
+OpenClaw is a **comprehensive personal AI assistant platform** that brings the power of modern LLMs to your existing communication channels. Its architecture is:
 
 - **Modular**: Plugin-based, extensible
 - **Secure**: Sandboxing, allowlists, pairing
@@ -863,10 +863,10 @@ The repository is actively maintained, welcomes contributions (including AI-assi
 
 **Next Steps for Learning:**
 1. Clone the repo and run `pnpm install`
-2. Run `clawdbot onboard` to see the wizard
+2. Run `openclaw onboard` to see the wizard
 3. Read through `src/gateway/server.impl.ts` to understand the core
 4. Explore a channel adapter (e.g., `src/telegram/`) to see integration
-5. Check out the docs at https://docs.clawd.bot
+5. Check out the docs at https://docs.openclaw.dev
 
 ---
 

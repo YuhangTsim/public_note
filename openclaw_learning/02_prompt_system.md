@@ -1,14 +1,14 @@
-# Clawdbot Prompt Engineering Deep Dive
+# OpenClaw Prompt Engineering Deep Dive
 
 **Date:** January 26, 2026  
-**Repository:** https://github.com/clawdbot/clawdbot  
+**Repository:** https://github.com/openclaw/openclaw  
 **Focus:** System Prompt Design, Architecture, and Full Examples
 
 ---
 
 ## Executive Summary
 
-Clawdbot uses a **modular, file-based prompt composition system** that combines:
+OpenClaw uses a **modular, file-based prompt composition system** that combines:
 1. **Hardcoded system instructions** (tooling, workspace, runtime info)
 2. **User-editable workspace files** (AGENTS.md, SOUL.md, TOOLS.md, MEMORY.md)
 3. **Dynamic context** (skills, runtime state, session info)
@@ -34,7 +34,7 @@ The system is designed to create **personalized, context-aware prompts** that ad
 │  2. Tooling: Available tools + summaries                │
 │  3. Skills: Skill roster + SKILL.md locations           │
 │  4. Memory: Memory search guidance                      │
-│  5. Documentation: Clawdbot docs paths                  │
+│  5. Documentation: OpenClaw docs paths                  │
 │  6. Workspace: Working directory + notes                │
 │  7. Sandbox: Execution environment info                 │
 │  8. User Identity: Owner numbers                        │
@@ -74,7 +74,7 @@ The system is designed to create **personalized, context-aware prompts** that ad
 
 ## Prompt Modes
 
-Clawdbot supports three prompt modes to optimize for different use cases:
+OpenClaw supports three prompt modes to optimize for different use cases:
 
 ### 1. **Full Mode** (Default)
 - **Used for:** Main assistant, direct user chats
@@ -99,7 +99,7 @@ Clawdbot supports three prompt modes to optimize for different use cases:
 
 ## Workspace Files (User-Editable Prompts)
 
-The genius of Clawdbot's design is that **users can customize agent behavior through markdown files** in their workspace directory (default: `~/clawd/`).
+The genius of OpenClaw's design is that **users can customize agent behavior through markdown files** in their workspace directory (default: `~/clawd/`).
 
 ### File Roles
 
@@ -194,10 +194,10 @@ This pattern is repeated for:
 
 ## Full Example: Main Assistant Prompt
 
-Here's a **complete, real-world system prompt** that Clawdbot generates for a main assistant session:
+Here's a **complete, real-world system prompt** that OpenClaw generates for a main assistant session:
 
 ```markdown
-You are a personal assistant running inside Clawdbot.
+You are a personal assistant running inside OpenClaw.
 
 ## Tooling
 Tool availability (filtered by policy):
@@ -218,7 +218,7 @@ Tool names are case-sensitive. Call tools exactly as listed.
 - nodes: List/describe/notify/camera/screen on paired nodes
 - cron: Manage cron jobs and wake events (use for reminders; when scheduling a reminder, write the systemEvent text as something that will read like a reminder when it fires, and mention that it is a reminder depending on the time gap between setting and firing; include recent context in reminder text if appropriate)
 - message: Send messages and channel actions
-- gateway: Restart, apply config, or run updates on the running Clawdbot process
+- gateway: Restart, apply config, or run updates on the running OpenClaw process
 - agents_list: List agent ids allowed for sessions_spawn
 - sessions_list: List other sessions (incl. sub-agents) with filters/last
 - sessions_history: Fetch history for another session/sub-agent
@@ -235,14 +235,14 @@ Narrate only when it helps: multi-step work, complex/challenging problems, sensi
 Keep narration brief and value-dense; avoid repeating obvious steps.
 Use plain human language for narration unless in a technical context.
 
-## Clawdbot CLI Quick Reference
-Clawdbot is controlled via subcommands. Do not invent commands.
+## OpenClaw CLI Quick Reference
+OpenClaw is controlled via subcommands. Do not invent commands.
 To manage the Gateway daemon service (start/stop/restart):
-- clawdbot gateway status
-- clawdbot gateway start
-- clawdbot gateway stop
-- clawdbot gateway restart
-If unsure, ask the user to run `clawdbot help` (or `clawdbot gateway --help`) and paste the output.
+- openclaw gateway status
+- openclaw gateway start
+- openclaw gateway stop
+- openclaw gateway restart
+If unsure, ask the user to run `openclaw help` (or `openclaw gateway --help`) and paste the output.
 
 ## Skills (mandatory)
 Before replying: scan <available_skills> <description> entries.
@@ -275,11 +275,11 @@ Constraints: never read more than one skill up front; only read after selecting.
 ## Memory Recall
 Before answering anything about prior work, decisions, dates, people, preferences, or todos: run memory_search on MEMORY.md + memory/*.md; then use memory_get to pull only the needed lines. If low confidence after search, say you checked.
 
-## Clawdbot Self-Update
+## OpenClaw Self-Update
 Get Updates (self-update) is ONLY allowed when the user explicitly asks for it.
 Do not run config.apply or update.run unless the user explicitly requests an update or config change; if it's not explicit, ask first.
 Actions: config.get, config.schema, config.apply (validate + write full config, then restart), update.run (update deps or git, then restart).
-After restart, Clawdbot pings the last active session automatically.
+After restart, OpenClaw pings the last active session automatically.
 
 ## Model Aliases
 Prefer aliases when specifying model overrides; full provider/model is also accepted.
@@ -300,13 +300,13 @@ Your working directory is: /Users/peter/clawd
 Treat this directory as the single global workspace for file operations unless explicitly instructed otherwise.
 
 ## Documentation
-Clawdbot docs: /Users/peter/clawdbot/docs
+OpenClaw docs: /Users/peter/openclaw/docs
 Mirror: https://docs.clawd.bot
-Source: https://github.com/clawdbot/clawdbot
+Source: https://github.com/openclaw/openclaw
 Community: https://discord.com/invite/clawd
 Find new skills: https://clawdhub.com
-For Clawdbot behavior, commands, config, or architecture: consult local docs first.
-When diagnosing issues, run `clawdbot status` yourself when possible; only ask the user if you lack access (e.g., sandboxed).
+For OpenClaw behavior, commands, config, or architecture: consult local docs first.
+When diagnosing issues, run `openclaw status` yourself when possible; only ask the user if you lack access (e.g., sandboxed).
 
 ## User Identity
 Owner numbers: +1234567890. Treat messages from these numbers as the user.
@@ -315,7 +315,7 @@ Owner numbers: +1234567890. Treat messages from these numbers as the user.
 Time zone: America/Los_Angeles
 
 ## Workspace Files (injected)
-These user-editable files are loaded by Clawdbot and included below in Project Context.
+These user-editable files are loaded by OpenClaw and included below in Project Context.
 
 ## Reply Tags
 To request a native reply/quote on supported surfaces, include one tag in your reply:
@@ -327,7 +327,7 @@ Tags are stripped before sending; support depends on the current channel config.
 ## Messaging
 - Reply in current session → automatically routes to the source channel (Signal, Telegram, etc.)
 - Cross-session messaging → use sessions_send(sessionKey, message)
-- Never use exec/curl for provider messaging; Clawdbot handles all routing internally.
+- Never use exec/curl for provider messaging; OpenClaw handles all routing internally.
 
 ### message tool
 - Use `message` for proactive sends + channel actions (polls, reactions, etc.).
@@ -610,7 +610,7 @@ Communication style: Direct, casual, no fluff
 - Values proactive help
 
 ### Recent Context
-- Working on Clawdbot v2026.1.25 release
+- Working on OpenClaw v2026.1.25 release
 - Focus areas: prompt engineering, multi-channel support
 - Testing WhatsApp and Telegram integrations
 
@@ -635,11 +635,11 @@ When you have nothing to say, respond with ONLY: ¿¿silent
 Heartbeat prompt: Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.
 If you receive a heartbeat poll (a user message matching the heartbeat prompt above), and there is nothing that needs attention, reply exactly:
 HEARTBEAT_OK
-Clawdbot treats a leading/trailing "HEARTBEAT_OK" as a heartbeat ack (and may discard it).
+OpenClaw treats a leading/trailing "HEARTBEAT_OK" as a heartbeat ack (and may discard it).
 If something needs attention, do NOT include "HEARTBEAT_OK"; reply with the alert text instead.
 
 ## Runtime
-Runtime: agent=default | host=Peters-MacBook-Pro.local | repo=/Users/peter/clawdbot | os=darwin (arm64) | node=v22.12.0 | model=anthropic/claude-opus-4-5 | default_model=anthropic/claude-opus-4-5 | channel=whatsapp | capabilities=inlineButtons,reactions | thinking=low
+Runtime: agent=default | host=Peters-MacBook-Pro.local | repo=/Users/peter/openclaw | os=darwin (arm64) | node=v22.12.0 | model=anthropic/claude-opus-4-5 | default_model=anthropic/claude-opus-4-5 | channel=whatsapp | capabilities=inlineButtons,reactions | thinking=low
 Reasoning: off (hidden unless on/stream). Toggle /reasoning; /status shows Reasoning when enabled.
 ```
 
@@ -773,7 +773,7 @@ The runtime section provides critical context about the execution environment:
 
 ```markdown
 ## Runtime
-Runtime: agent=default | host=Peters-MacBook-Pro.local | repo=/Users/peter/clawdbot | os=darwin (arm64) | node=v22.12.0 | model=anthropic/claude-opus-4-5 | default_model=anthropic/claude-opus-4-5 | channel=whatsapp | capabilities=inlineButtons,reactions | thinking=low
+Runtime: agent=default | host=Peters-MacBook-Pro.local | repo=/Users/peter/openclaw | os=darwin (arm64) | node=v22.12.0 | model=anthropic/claude-opus-4-5 | default_model=anthropic/claude-opus-4-5 | channel=whatsapp | capabilities=inlineButtons,reactions | thinking=low
 Reasoning: off (hidden unless on/stream). Toggle /reasoning; /status shows Reasoning when enabled.
 ```
 
@@ -884,7 +884,7 @@ To request a native reply/quote on supported surfaces, include one tag in your r
 
 ## Comparison to Other Systems
 
-| Feature | Clawdbot | ChatGPT | Claude | Custom Agents |
+| Feature | OpenClaw | ChatGPT | Claude | Custom Agents |
 |---------|----------|---------|--------|---------------|
 | **User-editable prompts** | ✅ Yes (SOUL.md, AGENTS.md) | ❌ No | ❌ No | ⚠️ Varies |
 | **Memory system** | ✅ Two-tier (daily + long-term) | ⚠️ Limited | ⚠️ Limited | ⚠️ Varies |
@@ -928,7 +928,7 @@ To request a native reply/quote on supported surfaces, include one tag in your r
 
 ## Conclusion
 
-Clawdbot's prompt design is a **masterclass in modular, user-customizable AI systems**. The key innovations:
+OpenClaw's prompt design is a **masterclass in modular, user-customizable AI systems**. The key innovations:
 
 1. **File-based customization** - Users edit markdown files, not code
 2. **Security by design** - MEMORY.md only in trusted contexts

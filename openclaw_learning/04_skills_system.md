@@ -1,6 +1,6 @@
 # Skills System
 
-The skills system in Clawdbot extends the agent's capabilities by providing reusable, discoverable, installable knowledge modules. Skills are markdown documents that teach the agent how to use specific tools, services, or workflows.
+The skills system in OpenClaw extends the agent's capabilities by providing reusable, discoverable, installable knowledge modules. Skills are markdown documents that teach the agent how to use specific tools, services, or workflows.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -29,7 +29,7 @@ Skills System
 ├── Discovery Layer (4-tier precedence)
 │   ├── Extra dirs (lowest priority)
 │   ├── Bundled skills
-│   ├── Managed skills (~/.config/clawdbot/skills/)
+│   ├── Managed skills (~/.config/openclaw/skills/)
 │   └── Workspace skills (highest priority)
 ├── Eligibility Filter
 │   ├── Platform check (os)
@@ -76,7 +76,7 @@ User-configured custom skill directories.
 
 **Configuration:**
 ```yaml
-# .clawdbot/config.yaml
+# .openclaw/config.yaml
 skills:
   load:
     extraDirs:
@@ -88,9 +88,9 @@ skills:
 
 ### 2. Bundled Skills
 
-Skills that ship with Clawdbot itself.
+Skills that ship with OpenClaw itself.
 
-**Location:** `<clawdbot-install>/skills/`
+**Location:** `<openclaw-install>/skills/`
 
 **Examples:**
 - `skills/nano-pdf/` - Edit PDFs with natural language
@@ -100,13 +100,13 @@ Skills that ship with Clawdbot itself.
 
 ### 3. Managed Skills
 
-System-wide skills installed via Clawdbot CLI.
+System-wide skills installed via OpenClaw CLI.
 
-**Location:** `~/.config/clawdbot/skills/`
+**Location:** `~/.config/openclaw/skills/`
 
 **Installation:**
 ```bash
-clawdbot skills install <skill-name>
+openclaw skills install <skill-name>
 ```
 
 ### 4. Workspace Skills (Highest Priority)
@@ -131,7 +131,7 @@ Every skill is a markdown file with YAML frontmatter containing metadata.
 name: nano-pdf
 description: Edit PDFs with natural-language instructions using the nano-pdf CLI.
 homepage: https://pypi.org/project/nano-pdf/
-metadata: {"clawdbot":{"emoji":"📄","requires":{"bins":["nano-pdf"]},"install":[{"id":"uv","kind":"uv","package":"nano-pdf","bins":["nano-pdf"],"label":"Install nano-pdf (uv)"}]}}
+metadata: {"openclaw":{"emoji":"📄","requires":{"bins":["nano-pdf"]},"install":[{"id":"uv","kind":"uv","package":"nano-pdf","bins":["nano-pdf"],"label":"Install nano-pdf (uv)"}]}}
 ---
 
 # nano-pdf
@@ -156,19 +156,19 @@ Notes:
 | `name` | string | ✅ | Unique skill identifier (lowercase, hyphenated) |
 | `description` | string | ✅ | Brief summary shown in skill lists |
 | `homepage` | string | ❌ | URL to official documentation |
-| `metadata` | object | ❌ | Clawdbot-specific configuration (see below) |
+| `metadata` | object | ❌ | OpenClaw-specific configuration (see below) |
 
 ---
 
 ## Metadata Schema
 
-The `metadata.clawdbot` object controls skill behavior, dependencies, and installation.
+The `metadata.openclaw` object controls skill behavior, dependencies, and installation.
 
 ### Full Schema
 
 **From `src/agents/skills/types.ts:19-33`:**
 ```typescript
-export type ClawdbotSkillMetadata = {
+export type OpenClawSkillMetadata = {
   always?: boolean;              // Always include in prompt (bypass eligibility)
   skillKey?: string;             // Override for conflict resolution
   primaryEnv?: string;           // Primary environment variable to inject
@@ -189,7 +189,7 @@ export type ClawdbotSkillMetadata = {
 
 ```json
 {
-  "clawdbot": {
+  "openclaw": {
     "emoji": "📧",
     "os": ["darwin", "linux"],
     "requires": {
@@ -269,7 +269,7 @@ case "brew": {
 ```json
 {
   "kind": "node",
-  "package": "@clawdbot/skill-ts-tools",
+  "package": "@openclaw/skill-ts-tools",
   "bins": ["tsc", "ts-node"]
 }
 ```
@@ -288,7 +288,7 @@ function buildNodeInstallCommand(packageName: string, prefs: SkillsInstallPrefer
 
 **User configuration:**
 ```yaml
-# .clawdbot/config.yaml
+# .openclaw/config.yaml
 skills:
   install:
     nodeManager: pnpm  # or npm, yarn, bun
@@ -326,7 +326,7 @@ Python package installer using `uv` (fast pip alternative).
 }
 ```
 
-**Auto-bootstrapping:** If `uv` isn't installed but brew is available, Clawdbot auto-installs `uv` first.
+**Auto-bootstrapping:** If `uv` isn't installed but brew is available, OpenClaw auto-installs `uv` first.
 
 **From `src/agents/skills-install.ts:355-378`:**
 ```typescript
@@ -370,7 +370,7 @@ Downloads and extracts archives from URLs.
 
 **Features:**
 - Auto-detects archive type (tar.gz, tar.bz2, zip)
-- Extracts to `~/.config/clawdbot/tools/<skill-name>/` by default
+- Extracts to `~/.config/openclaw/tools/<skill-name>/` by default
 - Supports `stripComponents` for tar archives (removes leading directories)
 - Configurable target directory
 
@@ -417,7 +417,7 @@ Not all skills are available in all contexts. Eligibility filtering ensures only
 
 ```json
 {
-  "clawdbot": {
+  "openclaw": {
     "os": ["darwin", "linux"],
     "requires": {
       "bins": ["himalaya"],
@@ -476,7 +476,7 @@ Eligible skills are formatted and injected into the agent's system prompt.
 export function buildWorkspaceSkillSnapshot(
   workspaceDir: string,
   opts?: {
-    config?: ClawdbotConfig;
+    config?: OpenClawConfig;
     skillFilter?: string[];      // Only include specific skills
     eligibility?: SkillEligibilityContext;
   }
@@ -515,7 +515,7 @@ Users can restrict which skills load:
 
 **Via Config:**
 ```yaml
-# .clawdbot/config.yaml
+# .openclaw/config.yaml
 skills:
   bundled:
     allowlist:
@@ -535,7 +535,7 @@ const snapshot = buildWorkspaceSkillSnapshot(workspaceDir, {
 ```typescript
 function filterSkillEntries(
   entries: SkillEntry[],
-  config?: ClawdbotConfig,
+  config?: OpenClawConfig,
   skillFilter?: string[],
   eligibility?: SkillEligibilityContext
 ): SkillEntry[] {
@@ -566,7 +566,7 @@ Extensions can provide their own skill directories.
 ```typescript
 export function resolvePluginSkillDirs(params: {
   workspaceDir: string;
-  config?: ClawdbotConfig;
+  config?: OpenClawConfig;
 }): string[] {
   const pluginsConfig = params.config?.extensions?.plugins ?? [];
   const skillDirs: string[] = [];
@@ -588,11 +588,11 @@ export function resolvePluginSkillDirs(params: {
 ### Plugin Configuration
 
 ```yaml
-# .clawdbot/config.yaml
+# .openclaw/config.yaml
 extensions:
   plugins:
-    - dir: ~/clawdbot-plugins/company-tools
-      # If ~/clawdbot-plugins/company-tools/skills/ exists, it's loaded
+    - dir: ~/openclaw-plugins/company-tools
+      # If ~/openclaw-plugins/company-tools/skills/ exists, it's loaded
 ```
 
 **Precedence:** Plugin skills are treated as "extra" skills (lowest priority).
@@ -614,12 +614,12 @@ extensions:
 - **`src/process/exec.ts`** - Command execution with timeout
 
 ### CLI
-- **`src/cli/skills-cli.ts`** - `clawdbot skills` command implementation
+- **`src/cli/skills-cli.ts`** - `openclaw skills` command implementation
 - **`src/cli/skills-cli.test.ts`** - CLI tests
 
 ### Skill Directories
-- **`skills/`** - Bundled skills shipped with Clawdbot
-- **`~/.config/clawdbot/skills/`** - User-installed managed skills
+- **`skills/`** - Bundled skills shipped with OpenClaw
+- **`~/.config/openclaw/skills/`** - User-installed managed skills
 - **`<workspace>/skills/`** - Workspace-specific skills
 
 ### Tests
@@ -642,7 +642,7 @@ extensions:
 ---
 name: my-tool
 description: Internal company CLI for deployment automation
-metadata: {"clawdbot":{"emoji":"🚀","requires":{"bins":["my-tool"],"env":["MY_TOOL_API_KEY"]},"install":[{"kind":"download","url":"https://releases.company.com/my-tool/latest/my-tool-macos.tar.gz","extract":true,"stripComponents":1,"bins":["my-tool"]}]}}
+metadata: {"openclaw":{"emoji":"🚀","requires":{"bins":["my-tool"],"env":["MY_TOOL_API_KEY"]},"install":[{"kind":"download","url":"https://releases.company.com/my-tool/latest/my-tool-macos.tar.gz","extract":true,"stripComponents":1,"bins":["my-tool"]}]}}
 ---
 
 # my-tool
@@ -668,13 +668,13 @@ my-tool rollback --env staging --version v1.2.3
 
 ```bash
 # List available skills
-clawdbot skills list
+openclaw skills list
 
 # Install a skill
-clawdbot skills install nano-pdf
+openclaw skills install nano-pdf
 
 # Install with specific installer
-clawdbot skills install nano-pdf --installer uv
+openclaw skills install nano-pdf --installer uv
 ```
 
 ### Programmatic Usage
@@ -683,7 +683,7 @@ clawdbot skills install nano-pdf --installer uv
 import { buildWorkspaceSkillSnapshot } from "./agents/skills.js";
 
 const snapshot = buildWorkspaceSkillSnapshot("/path/to/workspace", {
-  config: clawdbotConfig,
+  config: openclawConfig,
   skillFilter: ["nano-pdf", "my-custom-skill"],
   eligibility: {
     remote: {

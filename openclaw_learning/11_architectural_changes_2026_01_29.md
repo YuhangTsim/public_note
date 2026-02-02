@@ -7,7 +7,7 @@
 
 ## 🏗️ Overview
 
-While the v2026.1.29 update included a major rebrand (Clawdbot → Moltbot), it also introduced **significant architectural and design changes** affecting how components communicate, how authorization works, and how browser automation is routed.
+While the v2026.1.29 update included a major rebrand (Clawdbot → OpenClaw), it also introduced **significant architectural and design changes** affecting how components communicate, how authorization works, and how browser automation is routed.
 
 ---
 
@@ -307,13 +307,13 @@ channels:
 **Before (≤2026.1.25):**
 ```bash
 # Could reuse tokens from anthropic CLI
-clawdbot login --reuse-anthropic-cli
+openclaw login --reuse-anthropic-cli
 ```
 
 **After (≥2026.1.29):**
 ```bash
 # Must authenticate directly
-moltbot login anthropic
+openclaw login anthropic
 # Or use API keys directly
 ```
 
@@ -334,13 +334,13 @@ moltbot login anthropic
 anthropic login
 
 # 2. Reuse credentials
-clawdbot login --reuse-anthropic-cli
+openclaw login --reuse-anthropic-cli
 ```
 
 **New workflow:**
 ```bash
 # Direct authentication
-moltbot login anthropic
+openclaw login anthropic
 # Opens browser for OAuth flow
 ```
 
@@ -532,7 +532,7 @@ Unified Search Index
 
 ⚠️ **Note:** Large path sets increase indexing time. Monitor performance with:
 ```bash
-moltbot memory status
+openclaw memory status
 ```
 
 ### Documentation References
@@ -619,7 +619,7 @@ config:
 ### Breaking Changes
 
 - [ ] **Gateway Auth:** Remove `auth.mode: none`, add `auth.token`
-- [ ] **OAuth:** Stop using `--reuse-anthropic-cli`, use direct `moltbot login`
+- [ ] **OAuth:** Stop using `--reuse-anthropic-cli`, use direct `openclaw login`
 
 ### Recommended Updates
 

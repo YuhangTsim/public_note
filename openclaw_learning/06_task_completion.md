@@ -1,6 +1,6 @@
 # Task Completion & Agent Run Lifecycle
 
-This document explains how Clawdbot detects task completion, manages agent run states, and handles multi-turn conversations across channel platforms.
+This document explains how OpenClaw detects task completion, manages agent run states, and handles multi-turn conversations across channel platforms.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -15,7 +15,7 @@ This document explains how Clawdbot detects task completion, manages agent run s
 
 ## Overview
 
-Clawdbot's task completion system coordinates between:
+OpenClaw's task completion system coordinates between:
 1. **Pi agent runtime** - Claude API streaming responses
 2. **Tool execution** - Bash, file operations, skills
 3. **Channel platforms** - Discord, Telegram, WhatsApp, etc.
@@ -41,7 +41,7 @@ Runs progress through distinct states:
 
 ### From Pi Coding Agent Runtime
 
-Clawdbot uses `@mariozechner/pi-coding-agent` which provides:
+OpenClaw uses `@mariozechner/pi-coding-agent` which provides:
 
 **Stream Events:**
 ```typescript
@@ -120,7 +120,7 @@ export function buildSessionKey(params: {
 
 **Session Scopes:**
 ```yaml
-# .clawdbot/config.yaml
+# .openclaw/config.yaml
 session:
   dmScope: per-channel-peer  # or: main, per-channel
 ```
@@ -170,7 +170,7 @@ type ContentBlock =
 
 Sessions are stored in:
 ```
-~/.clawdbot/state/sessions/<session-key>.json
+~/.openclaw/state/sessions/<session-key>.json
 ```
 
 **Auto-pruning:** Old sessions are pruned based on:
@@ -181,7 +181,7 @@ Sessions are stored in:
 
 ## Embedded Runner Architecture
 
-The `pi-embedded-runner` orchestrates agent execution within Clawdbot's event-driven architecture.
+The `pi-embedded-runner` orchestrates agent execution within OpenClaw's event-driven architecture.
 
 ### Core Components
 
@@ -315,7 +315,7 @@ run.on("tool_use", async (event) => {
 
 ### Heartbeat System
 
-For long-running operations, Clawdbot sends heartbeat tokens:
+For long-running operations, OpenClaw sends heartbeat tokens:
 
 ```typescript
 const HEARTBEAT_INTERVAL_MS = 5000;
@@ -348,7 +348,7 @@ function startHeartbeat(run: AgentRun, channelAdapter: ChannelAdapter) {
 
 ### Tool Execution
 - **`src/agents/tools/bash-tools.exec.ts`** (1496 lines) - Bash tool with approval system
-- **`src/agents/tools/clawdbot-tools.ts`** - Core file operations (read, write, edit, grep)
+- **`src/agents/tools/openclaw-tools.ts`** - Core file operations (read, write, edit, grep)
 - **`src/agents/tool-registry.ts`** - Tool discovery and registration
 
 ### Channel Integration
@@ -392,7 +392,7 @@ User: "Run npm install"
 → Agent runs `bash` tool: npm install
 → Exec-approvals.json security="deny", command not in allowlist
 → Tool status: "pending_approval"
-→ Clawdbot prompts: "Approve 'npm install'? (y/n)"
+→ OpenClaw prompts: "Approve 'npm install'? (y/n)"
 → User responds: "y"
 → Tool executes, returns result
 → Agent continues with result

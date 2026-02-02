@@ -1,4 +1,4 @@
-# Clawdbot Tool System Architecture
+# OpenClaw Tool System Architecture
 
 **Last Updated:** January 26, 2026
 
@@ -15,7 +15,7 @@
 
 ## Overview
 
-Clawdbot implements a **comprehensive tool system** with 37+ built-in tools plus plugin extensibility. Tools are the primary mechanism for the AI agent to interact with the system, execute commands, control browsers, manage sessions, and communicate across channels.
+OpenClaw implements a **comprehensive tool system** with 37+ built-in tools plus plugin extensibility. Tools are the primary mechanism for the AI agent to interact with the system, execute commands, control browsers, manage sessions, and communicate across channels.
 
 ### Key Features
 - **Type-safe schemas** using TypeBox (JSON Schema)
@@ -64,8 +64,8 @@ type AgentToolResult = {
 
 **Step 1: Factory Creation**
 ```typescript
-// src/agents/clawdbot-tools.ts
-export function createClawdbotTools(options?: {
+// src/agents/openclaw-tools.ts
+export function createOpenClawTools(options?: {
   browserControlUrl?: string;
   agentSessionKey?: string;
   sandboxRoot?: string;
@@ -270,7 +270,7 @@ export const TOOL_GROUPS: Record<string, string[]> = {
   "group:automation": ["cron", "gateway"],
   "group:messaging": ["message"],
   "group:nodes": ["nodes"],
-  "group:clawdbot": [/* all native tools */],
+  "group:openclaw": [/* all native tools */],
 };
 
 // Tool profiles for different use cases
@@ -290,7 +290,7 @@ const TOOL_PROFILES: Record<ToolProfileId, ToolProfilePolicy> = {
 
 **Core Tools** - Hardcoded in factory function:
 ```typescript
-// src/agents/clawdbot-tools.ts
+// src/agents/openclaw-tools.ts
 // All core tools are directly instantiated - no dynamic discovery
 const tools = [
   createExecTool(),
@@ -304,12 +304,12 @@ const tools = [
 ```typescript
 // src/plugins/tools.ts
 export function resolvePluginTools(params: {
-  context: ClawdbotPluginToolContext;
+  context: OpenClawPluginToolContext;
   existingToolNames?: Set<string>;
   toolAllowlist?: string[];
 }): AnyAgentTool[] {
   // 1. Load plugin registry
-  const registry = loadClawdbotPlugins({
+  const registry = loadOpenClawPlugins({
     config: params.context.config,
     workspaceDir: params.context.workspaceDir,
   });
@@ -480,7 +480,7 @@ export function sanitizeToolResult(result: unknown): unknown {
 ### 1. Execution Approval Architecture
 
 ```typescript
-// ~/.clawdbot/exec-approvals.json
+// ~/.openclaw/exec-approvals.json
 {
   "version": 1,
   "socket": { "path": "...", "token": "..." },
@@ -742,7 +742,7 @@ tools:
 | `bash-tools.exec.ts` | Exec tool with approval/allowlist | 1496 lines |
 | `bash-tools.process.ts` | Process management tool | 21KB |
 | `browser-tool.ts` | Browser automation | 28KB |
-| `clawdbot-tools.ts` | Main tool factory | 168 lines |
+| `openclaw-tools.ts` | Main tool factory | 168 lines |
 | `tool-policy.ts` | Tool allowlists & profiles | 229 lines |
 | `exec-approvals.ts` | Approval system & allowlists | 1200+ lines |
 | `pi-tool-definition-adapter.ts` | Convert to provider format | 104 lines |
@@ -758,7 +758,7 @@ tools:
 3. **Configure safe bins** - Add commonly used safe commands to `tools.exec.safeBins`
 4. **Use tool groups** - Simplify config with `group:runtime`, `group:fs`, etc.
 5. **Test in sandbox** - Default to `host: "sandbox"` for non-main sessions
-6. **Monitor approvals** - Check `~/.clawdbot/exec-approvals.json` for usage patterns
+6. **Monitor approvals** - Check `~/.openclaw/exec-approvals.json` for usage patterns
 7. **Use ask modes wisely** - `on-miss` balances security and usability
 
 ---

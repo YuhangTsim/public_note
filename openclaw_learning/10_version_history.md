@@ -1,8 +1,8 @@
-# Clawdbot/Moltbot Version History
+# OpenClaw Version History
 
 **Last Updated:** 2026-01-29
 
-> **IMPORTANT REBRAND (2026.1.29):** The project was renamed from **Clawdbot** to **Moltbot**. The npm package is now `moltbot`, but legacy compatibility is maintained.
+> **IMPORTANT REBRAND (2026.1.29):** The project was renamed from **Clawdbot** to **OpenClaw**. The npm package is now `openclaw`, but legacy compatibility is maintained.
 
 ---
 
@@ -10,13 +10,13 @@
 
 | Item | Old (≤2026.1.25) | New (≥2026.1.29) |
 |------|------------------|------------------|
-| **Package Name** | `clawdbot` | `moltbot` |
-| **CLI Command** | `clawdbot` | `moltbot` (with `clawdbot` compat shim) |
-| **Repository** | https://github.com/clawdbot/clawdbot | Same URL (org name unchanged) |
-| **Documentation** | https://docs.clawd.bot | https://docs.molt.bot |
-| **Config Directory** | `~/.clawdbot/` | `~/.moltbot/` (auto-migrates from legacy) |
-| **Extensions Scope** | Various | `@moltbot/*` |
-| **macOS Bundle ID** | `com.clawdbot.*` | `bot.molt.*` |
+| **Package Name** | `clawdbot` | `openclaw` |
+| **CLI Command** | `clawdbot` | `openclaw` (with `clawdbot` compat shim) |
+| **Repository** | https://github.com/openclaw/openclaw | Same URL (org name unchanged) |
+| **Documentation** | https://docs.clawd.bot | https://docs.openclaw.dev |
+| **Config Directory** | `~/.clawdbot/` | `~/.openclaw/` (auto-migrates from legacy) |
+| **Extensions Scope** | Various | `@openclaw/*` |
+| **macOS Bundle ID** | `com.clawdbot.*` | `dev.openclaw.*` |
 
 ---
 
@@ -28,16 +28,16 @@
 
 ### 🎯 Highlights
 
-#### 1. **MAJOR REBRAND: Clawdbot → Moltbot**
-- **Reason:** Trademark considerations (thanks @thewilloftheshadow)
+#### 1. **MAJOR REBRAND: Clawdbot → OpenClaw**
+- **Reason:** Trademark considerations
 - **Changes:**
-  - npm package renamed to `moltbot`
-  - CLI command: `moltbot` (with `clawdbot` compatibility shim)
-  - Extensions moved to `@moltbot/*` scope
-  - macOS bundle IDs updated to `bot.molt.*`
+  - npm package renamed to `openclaw`
+  - CLI command: `openclaw` (with `clawdbot` compatibility shim)
+  - Extensions moved to `@openclaw/*` scope
+  - macOS bundle IDs updated to `dev.openclaw.*`
   - Logging subsystems renamed
-  - Config auto-migrates from `~/.clawdbot/` to `~/.moltbot/`
-  - Documentation moved to https://docs.molt.bot
+  - Config auto-migrates from `~/.clawdbot/` to `~/.openclaw/`
+  - Documentation moved to https://docs.openclaw.dev
 
 #### 2. **New Channels & Plugins**
 - **Twitch Plugin** (#1612) - Streaming platform integration
@@ -232,16 +232,16 @@
 
 ---
 
-## Migration Guide: Clawdbot → Moltbot
+## Migration Guide: Clawdbot → OpenClaw
 
 ### For New Installs (Recommended)
 
 ```bash
 # Install the new package
-npm install -g moltbot@latest
+npm install -g openclaw@latest
 
-# Config will be created at ~/.moltbot/
-moltbot onboard
+# Config will be created at ~/.openclaw/
+openclaw onboard
 ```
 
 ### For Existing Users
@@ -250,33 +250,33 @@ moltbot onboard
 
 ```bash
 # Update to the renamed package
-npm uninstall -g clawdbot
-npm install -g moltbot@latest
+npm uninstall -g openclaw
+npm install -g openclaw@latest
 
-# Config auto-migrates from ~/.clawdbot/ to ~/.moltbot/
-moltbot gateway run
+# Config auto-migrates from ~/.openclaw/ to ~/.openclaw/
+openclaw gateway run
 ```
 
 **Option 2: Manual Migration**
 
 ```bash
 # Backup your config
-cp -r ~/.clawdbot ~/.clawdbot.backup
+cp -r ~/.openclaw ~/.openclaw.backup
 
 # Install new package
-npm install -g moltbot@latest
+npm install -g openclaw@latest
 
 # Manually move config
-mv ~/.clawdbot ~/.moltbot
+mv ~/.openclaw ~/.openclaw
 
 # Update any hardcoded paths in your scripts
-# Old: clawdbot gateway run
-# New: moltbot gateway run
+# Old: openclaw gateway run
+# New: openclaw gateway run
 ```
 
 **Legacy Compatibility:**
-- The `clawdbot` command still works via compatibility shim
-- Old config directory `~/.clawdbot/` is auto-migrated
+- The `openclaw` command still works via compatibility shim
+- Old config directory `~/.openclaw/` is auto-migrated
 - GitHub repository URL remains the same
 
 ---
@@ -287,31 +287,31 @@ mv ~/.clawdbot ~/.moltbot
 
 ```bash
 # Old way
-clawdbot --version
+openclaw --version
 
 # New way
-moltbot --version
+openclaw --version
 ```
 
 ### Update to Latest
 
 ```bash
-# If you have clawdbot installed
-npm uninstall -g clawdbot
-npm install -g moltbot@latest
+# If you have openclaw installed
+npm uninstall -g openclaw
+npm install -g openclaw@latest
 
 # Or directly update
-npm install -g moltbot@latest
+npm install -g openclaw@latest
 ```
 
 ### Development Channel
 
 ```bash
 # Beta releases
-npm install -g moltbot@beta
+npm install -g openclaw@beta
 
 # Specific version
-npm install -g moltbot@2026.1.29
+npm install -g openclaw@2026.1.29
 ```
 
 ---
@@ -363,12 +363,12 @@ Special thanks to all contributors who made this release possible:
 
 ## Resources
 
-- **Official Repository:** https://github.com/clawdbot/clawdbot (name unchanged)
+- **Official Repository:** https://github.com/openclaw/openclaw (name unchanged)
 - **New Documentation:** https://docs.molt.bot
 - **Legacy Documentation:** https://docs.clawd.bot (may redirect)
-- **NPM Package:** https://www.npmjs.com/package/moltbot
-- **Changelog:** https://github.com/clawdbot/clawdbot/blob/main/CHANGELOG.md
-- **Release Guide:** https://github.com/clawdbot/clawdbot/blob/main/docs/reference/RELEASING.md
+- **NPM Package:** https://www.npmjs.com/package/openclaw
+- **Changelog:** https://github.com/openclaw/openclaw/blob/main/CHANGELOG.md
+- **Release Guide:** https://github.com/openclaw/openclaw/blob/main/docs/reference/RELEASING.md
 
 ---
 
@@ -383,7 +383,7 @@ Special thanks to all contributors who made this release possible:
 | **Need Twitch/Google Chat** | Update required |
 | **Security-conscious** | Update (major security hardening) |
 | **macOS user** | Note bundle ID changes; test first |
-| **Extension developer** | Update and migrate to `@moltbot/*` scope |
+| **Extension developer** | Update and migrate to `@openclaw/*` scope |
 
 ---
 
@@ -391,7 +391,7 @@ Special thanks to all contributors who made this release possible:
 
 | Feature | 2026.1.25 | 2026.1.29 |
 |---------|-----------|-----------|
-| Package Name | `clawdbot` | `moltbot` |
+| Package Name | `openclaw` | `openclaw` |
 | Gateway Auth Required | Optional | **Required** |
 | Twitch Plugin | ❌ | ✅ |
 | Google Chat | ❌ | ✅ (beta) |

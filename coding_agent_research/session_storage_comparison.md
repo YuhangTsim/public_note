@@ -1,4 +1,4 @@
-# Session Storage Comparison: OpenCode vs Roo-Code vs Clawdbot
+# Session Storage Comparison: OpenCode vs Roo-Code vs OpenClaw
 
 **Research Date**: January 26, 2026
 **Objective**: Analyze how three leading AI coding agents persist conversation history, session state, and metadata.
@@ -9,7 +9,7 @@ All three agents rely on **file-based storage** for their primary session histor
 
 - **OpenCode** uses a **sophisticated split-file architecture** (normalized data) optimized for concurrent access and incremental updates.
 - **Roo-Code** uses a **hybrid approach**, leveraging VS Code's `globalState` Memento for metadata and simple JSON files for full message history.
-- **Clawdbot** uses **JSON Lines (.jsonl)** for append-only log efficiency, with SQLite used *only* for semantic search (vectors), not for session storage.
+- **OpenClaw** uses **JSON Lines (.jsonl)** for append-only log efficiency, with SQLite used *only* for semantic search (vectors), not for session storage.
 
 ---
 
@@ -78,19 +78,19 @@ globalStorage/
 
 ---
 
-## 3. Clawdbot Architecture
+## 3. OpenClaw Architecture
 
-Clawdbot optimizes for append-only logging and streaming performance using JSONL.
+OpenClaw optimizes for append-only logging and streaming performance using JSONL.
 
 ### Storage Location
-- **Sessions**: `~/.clawdbot/memory/transcripts/{agentId}/`
-- **Metadata**: `~/.config/clawdbot/sessions.json`
+- **Sessions**: `~/.openclaw/memory/transcripts/{agentId}/`
+- **Metadata**: `~/.config/openclaw/sessions.json`
 
 ### Data Structure (JSON Lines)
 Session files are stored as `.jsonl` files, where each line is a complete JSON object representing a single event or message.
 
 ```text
-~/.clawdbot/
+~/.openclaw/
 ├── memory/
 │   └── transcripts/
 │       └── default/
@@ -115,7 +115,7 @@ Session files are stored as `.jsonl` files, where each line is a complete JSON o
 
 ## Comparison Matrix
 
-| Feature | OpenCode | Roo-Code | Clawdbot |
+| Feature | OpenCode | Roo-Code | OpenClaw |
 | :--- | :--- | :--- | :--- |
 | **Storage Medium** | **Split JSON Files** | **JSON Files + Memento** | **JSON Lines (.jsonl)** |
 | **Database** | None | None | SQLite (Vectors Only) |
@@ -127,5 +127,5 @@ Session files are stored as `.jsonl` files, where each line is a complete JSON o
 ## Conclusion
 
 - **OpenCode** has the most robust storage architecture, mimicking a NoSQL database structure with files. This allows it to handle very long conversations with minimal memory footprint (loading only what is needed).
-- **Clawdbot** chooses simplicity and write-performance with JSONL, making it excellent for logging and streaming but potentially slower for random access reads.
+- **OpenClaw** chooses simplicity and write-performance with JSONL, making it excellent for logging and streaming but potentially slower for random access reads.
 - **Roo-Code** relies on VS Code primitives, which makes it tightly coupled to the editor but ensures seamless integration with the IDE's state management.
