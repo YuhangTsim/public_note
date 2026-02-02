@@ -144,6 +144,31 @@ class SmartTruncation {
 **Pros**: Intelligent selection, preserves critical messages  
 **Cons**: More complex, may misjudge importance
 
+## Advanced Optimization Techniques
+
+### 4. Folded File Context (Tree-sitter)
+To maintain long-term awareness of project structure without consuming tokens for implementation details, Roo-Code uses **Folded File Context**.
+
+- **Mechanism**: Uses `tree-sitter` to parse source code.
+- **Action**: Extracts only function signatures, class declarations, and imports.
+- **Output**: Wraps "folded" content in `<system-reminder>` blocks.
+- **Use Case**: When tasks span many files, this keeps the "skeleton" of the project in context while dropping the "flesh" (implementation bodies).
+
+```typescript
+// src/core/condense/foldedFileContext.ts
+export async function generateFoldedFileContext(filePaths: string[], options: FoldedFileContextOptions) {
+  // Parses file, keeps signatures, replaces bodies with "..."
+  // Wraps in <system-reminder>## File Context: path/to/file...</system-reminder>
+}
+```
+
+### 5. Semantic File Reading (Indentation Mode)
+Instead of arbitrary line ranges, the `read_file` tool can read based on code structure.
+
+- **Problem**: Reading lines 50-100 might cut a function in half.
+- **Solution**: "Indentation Mode" reads the block at a specific anchor line and its children.
+- **Result**: Complete semantic units (functions, classes) are added to context, reducing the need for follow-up reads to fix broken syntax.
+
 ## Hybrid Strategy (What Roo Uses)
 
 Combines all three approaches:

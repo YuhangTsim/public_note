@@ -18,7 +18,7 @@ Tools are **actions the AI can take**. Every tool call goes through a strict val
 ## Tool Categories
 
 ### Read Tools
-- `read_file` - Read file contents
+- `read_file` - Read file contents (supports Slice and Indentation modes)
 - `list_files` - List directory contents
 - `search_files` - Search by filename pattern
 - `codebase_search` - Semantic code search
@@ -124,6 +124,16 @@ Error: Tool 'write_to_file' in mode 'architect' can only edit files matching pat
 
 ## Tool Execution Flow
 
+### Parallel Tool Execution & Isolation
+Roo-Code supports **parallel tool calls** (multiple tools in one turn), with specific isolation rules for task delegation.
+
+**The `new_task` Isolation Rule**:
+If the model calls `new_task`, it **must be the last tool** in the sequence.
+- **Allowed**: `[read_file, write_to_file, new_task]` (Tools before execute normally)
+- **Forbidden**: `[new_task, write_to_file]` (Tools after are truncated and return errors)
+
+This ensures that when a task is delegated, the parent task pauses immediately after the delegation, preventing orphaned actions.
+
 ### From API Response to Execution
 
 ```typescript
@@ -133,122 +143,40 @@ async function presentAssistantMessage(
   task: Task
 ): Promise<void> {
   
+  // ... streaming logic ...
+
   for (const block of content) {
-    if (block.type === 'text') {
-      await task.say('text', block.text)
+    if (block.type === 'tool_use') {
+      // 1. Validation (Schema & Permissions)
+      // 2. Repetition Check
+      // 3. User Approval
+      // 4. Execution
+      
+      // Special handling for new_task isolation happened during stream processing:
+      // Tools appearing after new_task are pre-cancelled with an error result.
     }
-    else if (block.type === 'tool_use') {
-      // ==========================================
-      // STEP 1: Validation
-      // ==========================================
-      try {
-        validateToolUse(
-          block.name,
-          block.input,
-          task.currentMode,
-          task.experiments
-        )
-      } catch (error) {
-        // Validation failed
-        await task.say('error', `Tool validation failed: ${error.message}`)
-        
-        // Add error to API history
-        toolResults.push({
-          type: 'tool_result',
-          tool_use_id: block.id,
-          content: `Error: ${error.message}`,
-          is_error: true
-        })
-        
-        task.consecutiveMistakeCount++
-        continue // Skip execution
-      }
-      
-      // ==========================================
-      // STEP 2: Repetition Check
-      // ==========================================
-      if (task.toolRepetitionDetector.isRepeating(block.name)) {
-        await task.say('error', `Tool repetition limit reached for ${block.name}`)
-        
-        toolResults.push({
-          type: 'tool_result',
-          tool_use_id: block.id,
-          content: 'Error: Tool repetition limit exceeded',
-          is_error: true
-        })
-        
-        continue // Skip execution
-      }
-      
-      // ==========================================
-      // STEP 3: User Approval (if needed)
-      // ==========================================
-      if (needsApproval(block.name, block.input)) {
-        const response = await task.ask('tool', {
-          tool: block.name,
-          params: block.input
-        })
-        
-        if (response.response !== 'yesButtonClicked') {
-          // User rejected or provided feedback
-          await task.say('user_feedback', response.text || 'Tool execution rejected')
-          
-          toolResults.push({
-            type: 'tool_result',
-            tool_use_id: block.id,
-            content: response.text || 'User rejected tool execution'
-          })
-          
-          continue // Skip execution
-        }
-      }
-      
-      // ==========================================
-      // STEP 4: Execute Tool
-      // ==========================================
-      const tool = getToolInstance(block.name)
-      
-      try {
-        const result = await tool.execute(block.input, task)
-        
-        // Success
-        await task.say('tool_result', result)
-        
-        toolResults.push({
-          type: 'tool_result',
-          tool_use_id: block.id,
-          content: result
-        })
-        
-        task.toolRepetitionDetector.recordToolUse(block.name)
-        
-      } catch (error) {
-        // Execution failed
-        await task.say('error', `Tool execution failed: ${error.message}`)
-        
-        toolResults.push({
-          type: 'tool_result',
-          tool_use_id: block.id,
-          content: `Error: ${error.message}`,
-          is_error: true
-        })
-      }
-    }
-  }
-  
-  // ==========================================
-  // STEP 5: Add Results to History
-  // ==========================================
-  if (toolResults.length > 0) {
-    task.apiConversationHistory.push({
-      role: 'user',
-      content: toolResults
-    })
   }
 }
 ```
 
 ---
+
+## Tool Details
+
+### Smart File Reading (`read_file`)
+
+The `read_file` tool supports two reading modes to optimize context usage:
+
+1.  **Slice Mode (Default)**: Reads contiguous lines using `offset` and `limit`.
+2.  **Indentation Mode**: Extracts semantic code blocks based on indentation hierarchy.
+    - Useful for reading entire functions/classes without reading the whole file.
+    - Parameters: `anchor_line`, `max_levels`, `include_siblings`.
+
+**Legacy Support**: Also supports the old `{ files: [...] }` format for backward compatibility.
+
+---
+
+## Validation Flow
 
 ## Tool Repetition Detection
 
