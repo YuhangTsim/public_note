@@ -26,6 +26,14 @@ Comprehensive documentation for **Clawdbot/OpenClaw** - a personal AI assistant 
 8. **[Version History](./10_version_history.md)** - Release notes, changelog, migration guides (Clawdbot → OpenClaw rebrand)
 9. **[Architectural Changes (v2026.1.29)](./11_architectural_changes_2026_01_29.md)** - Design & architecture changes in latest release
 
+### Deep Dive & Internals
+
+10. **[Deep Dive: Agent Internals](./12_deep_dive_agent_internals.md)** - Comprehensive exploration of:
+    - Main agent loop (runEmbeddedPiAgent, turn management, streaming)
+    - Memory handling (JSONL transcripts, SQLite embeddings, hybrid search)
+    - Tooling & policy (tool registration, security enforcement, approval system)
+    - Browser control (Playwright integration, session management, routing)
+
 ---
 
 ## 🚀 Quick Start
