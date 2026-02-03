@@ -19,7 +19,12 @@ Documentation and analysis of the **Oh My OpenCode** (OMO) project, a sophistica
    - Categories (`visual-engineering`, `ultrabrain`).
    - Skills (`playwright`, `git-master`) and their domains.
 
-4. **[04_prompt_engineering.md](./04_prompt_engineering.md)**
+4. **[08_skill_implementation_deep_dive.md](./08_skill_implementation_deep_dive.md)**
+   - Technical breakdown of the skill system.
+   - The 3-Tier MCP Architecture.
+   - Parsing logic and Zod validation.
+
+5. **[04_prompt_engineering.md](./04_prompt_engineering.md)**
    - Analysis of `sisyphus-prompt.md`.
    - Phase 0: Intent Gating.
    - Mandatory Justification constraints.

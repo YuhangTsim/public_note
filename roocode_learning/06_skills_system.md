@@ -94,3 +94,32 @@ class SkillsManager {
 
 **Version**: Roo-Code v3.43.0 (January 2026)
 **Updated**: January 26, 2026
+
+---
+
+## Technical Implementation (Deep Dive)
+
+### 1. Protocol: Native JSON Only
+As of v3.43.0, Roo Code has **completely deprecated** the legacy XML tool calling protocol.
+*   **Old:** XML tags like `<read_file>...</read_file>` in the response.
+*   **New:** Native OpenAI Tool Definitions (JSON).
+
+The codebase shows the complete removal of XML tool parsing logic (`getToolDescription`), relying exclusively on the standardized `tool_calls` array in the API response.
+
+### 2. MCP Integration & Dynamic Generation
+Roo Code integrates with MCP (Model Context Protocol) servers via the `McpHub`.
+*   **Mechanism:** `McpHub` manages connections to local or remote MCP servers.
+*   **Dynamic Generation:** Tools are dynamically generated from these servers. The function `getMcpServerTools(mcpHub)`:
+    1.  Fetches tool schemas from connected servers.
+    2.  Normalizes them to **JSON Schema 2020-12**.
+    3.  Deduplicates tools (Project servers > Global servers).
+    4.  Filters out disabled tools.
+
+### 3. Tool Filtering by Mode
+Tools are not global; they are context-aware.
+*   **Filtering:** `filter-tools-for-mode.ts` restricts which tools are visible based on the active mode (Code vs. Architect vs. Ask).
+*   **Logic:**
+    *   **Aliases:** Maps internal names (e.g., `grep_search` → `grep`).
+    *   **Model Restrictions:** Certain tools can be hidden from weaker models.
+    *   **MCP Restrictions:** MCP tools can be whitelisted/blacklisted per mode.
+
