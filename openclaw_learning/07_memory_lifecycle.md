@@ -82,18 +82,18 @@ OpenClaw maintains a **SQLite database** (`~/.openclaw/state/memory/<agent>.sqli
 
 ```mermaid
 graph TD
-    A[Session Running] -->|Token Limit Approaching| B(Memory Flush Triggered)
-    B --> C{Agent Decision}
-    C -->|Important Info| D[Write to memory/YYYY-MM-DD.md]
-    C -->|Nothing new| E[Silent Reply]
-    D --> F[File Watcher / Sync]
-    F --> G[Chunk & Embed]
-    G --> H[SQLite Vector Store]
+    A["Session Running"] -->|Token Limit Approaching| B("Memory Flush Triggered")
+    B --> C{"Agent Decision"}
+    C -->|Important Info| D["Write to memory/YYYY-MM-DD.md"]
+    C -->|Nothing new| E["Silent Reply"]
+    D --> F["File Watcher / Sync"]
+    F --> G["Chunk & Embed"]
+    G --> H["SQLite Vector Store"]
     
-    I[User Question] --> J[Agent calls memory_search]
-    J --> K[Hybrid Search (Vector + FTS)]
-    K --> L[Results with Citations]
-    L --> M[Agent Answer]
+    I["User Question"] --> J["Agent calls memory_search"]
+    J --> K["Hybrid Search (Vector + FTS)"]
+    K --> L["Results with Citations"]
+    L --> M["Agent Answer"]
 ```
 
 ## Key Configuration (`ResolvedMemorySearchConfig`)
