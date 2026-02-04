@@ -60,21 +60,26 @@ OpenClaw maintains a **SQLite database** (`~/.openclaw/state/memory/<agent>.sqli
 **Tools:** `memory_search` and `memory_get` (`src/agents/tools/memory-tool.ts`)
 
 ### A. The Search Tool (`memory_search`)
-*   **Usage:** `memory_search(query: string)`
+*   **Usage:** `memory_search(query: string, maxResults?: number, minScore?: number)`
 *   **Logic:** Performs a **Hybrid Search** (Vector + Keyword).
     *   **Vector Score:** Semantic similarity (Weight ~0.7).
     *   **Text Score:** Keyword match (Weight ~0.3).
-*   **Filtering:** Returns top results (default 6) exceeding `minScore` (0.35).
-*   **Citations:** Decorates results with file path and line numbers (`memory/2026-01-26.md#L10-L15`).
+    *   **Hybrid Formula:** `(VectorScore * VectorWeight) + (TextScore * TextWeight)`.
+*   **Filtering:**
+    *   Returns top results (default `DEFAULT_MAX_RESULTS = 6`).
+    *   Filters out results below `DEFAULT_MIN_SCORE` (0.35) to reduce noise.
+*   **Citations:** Decorates results with file path and line numbers (e.g., `memory/2026-01-26.md#L10-L15`).
+    *   **Auto-Citation Mode:** In Direct Messages (Main Session), citations are shown. In Group Chats, they are hidden to reduce visual noise (`shouldIncludeCitations`).
 
 ### B. The Get Tool (`memory_get`)
 *   **Usage:** `memory_get(path: string, from?: number, lines?: number)`
-*   **Purpose:** Surgical reading.
+*   **Purpose:** Surgical reading to expand context or verify details found in search.
 *   **Workflow:**
-    1.  Agent runs `memory_search("deployment process")`.
-    2.  System returns snippet from `memory/2026-01-20.md` lines 50-55.
-    3.  Agent realizes it needs more context.
-    4.  Agent runs `memory_get("memory/2026-01-20.md", 40, 30)` to read lines 40-70.
+    1.  **Search First:** Agent runs `memory_search("deployment process")`.
+    2.  **Analyze Snippet:** System returns a truncated snippet from `memory/2026-01-20.md` lines 50-55.
+    3.  **Expand Context:** Agent realizes the snippet is cut off or references surrounding text.
+    4.  **Surgical Read:** Agent runs `memory_get("memory/2026-01-20.md", 40, 30)` to read lines 40-70.
+    5.  **Result:** Returns the exact text content of those lines, minimizing token usage compared to reading the whole file.
 
 ---
 
