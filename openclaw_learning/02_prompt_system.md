@@ -110,6 +110,8 @@ The genius of OpenClaw's design is that **users can customize agent behavior thr
 | **TOOLS.md** | Environment-specific tool notes | Every session | Camera names, SSH hosts, preferred voices |
 | **USER.md** | User profile, preferences, context | Every session | Name, role, timezone, communication style |
 | **MEMORY.md** | Long-term curated memories | **Main session only** | Decisions, lessons learned, important context |
+| **BOOTSTRAP.md** | First-run setup script | First run only | "Who am I? What's your name?" |
+| **HEARTBEAT.md** | Periodic task checklist | Every heartbeat | "Check email, check calendar" |
 | **memory/YYYY-MM-DD.md** | Daily activity logs | Today + yesterday | Raw logs of conversations and actions |
 
 ### Security Design
@@ -699,6 +701,8 @@ const contextFiles: EmbeddedContextFile[] = [
   { path: "MEMORY.md", content: fs.readFileSync("~/clawd/MEMORY.md", "utf-8") },
   { path: "memory/2026-01-26.md", content: fs.readFileSync("~/clawd/memory/2026-01-26.md", "utf-8") },
   { path: "memory/2026-01-25.md", content: fs.readFileSync("~/clawd/memory/2026-01-25.md", "utf-8") },
+  // BOOTSTRAP.md (if present)
+  { path: "BOOTSTRAP.md", content: fs.readFileSync("~/clawd/BOOTSTRAP.md", "utf-8") },
 ];
 ```
 
@@ -806,6 +810,7 @@ This tells the agent:
 - MEMORY.md only in main sessions
 - Daily logs limited to today + yesterday
 - Context files loaded on-demand
+- **Smart Truncation:** `buildBootstrapContextFiles` truncates large files (default 20k chars), keeping head+tail to fit context window.
 
 ### 4. **Tool Summaries**
 - One-line summaries instead of full documentation
