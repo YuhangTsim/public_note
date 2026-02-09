@@ -73,10 +73,15 @@ export const sisyphus = {
 ### Sub-Agent Isolation
 When Sisyphus calls `delegate_task`, OMO spawns a **new session** (or child process) for the sub-agent.
 - **Isolation**: The sub-agent has its own context window. It doesn't see Sisyphus's full history, only the `prompt` passed to it.
-- **Reintegration**: The sub-agent returns a text result, which is inserted into Sisyphus's context. This acts as a "memory compression" mechanism.
+- **Async Execution**: Sisyphus sets `run_in_background=true`. He receives a `task_id` and **continues working**.
+- **Reintegration**: When the sub-agent is done, Sisyphus calls `background_output(task_id)`. The text result is inserted into Sisyphus's context.
+
+### Comparison: OMO vs Roo Code Subtasks
+*   **OMO**: **Parallel**. Sisyphus spawns 3 agents and keeps coding. High throughput.
+*   **Roo Code**: **Serial**. Parent pauses. Child runs. Parent resumes. Deep focus.
+*   **OpenClaw**: **Fire-and-Forget**. Spawns a job that reports to the chat channel later.
 
 ## 4. The "Ultrawork" Loop
-
 The `ultrawork` keyword triggers a meta-state in the client.
 
 1.  **User**: `ulw fix the login bug`
