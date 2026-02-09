@@ -462,3 +462,22 @@ agents:
 - [Tool System](./03_tool_system.md) - How tools execute and report completion
 - [Access Control](./05_access_control.md) - Approval systems that affect completion
 - [Gateway Architecture](./08_gateway_architecture.md) - WebSocket event streaming
+
+## Chat vs. Task Completion (Implicit)
+
+Unlike Roo Code (which has a dedicated completion tool) or Sisyphus (which has a completion loop), OpenClaw uses an **Implicit / Text-First** completion model.
+
+### 1. The "Text = Done" Rule
+*   **Logic:** If the LLM generates **text content** (not a tool call), the system interprets this as the final answer for the turn.
+*   **Effect:** The streaming connection closes, and the system waits for the next user event.
+
+### 2. The "Silent" Completion (`NO_REPLY`)
+Sometimes a task is complete, but no message should be sent (e.g., a background cron job checking for emails and finding none).
+*   **Token:** `¿¿silent` (mapped to `NO_REPLY` internally).
+*   **Behavior:** The agent outputs this token. The system detects it, marks the turn as complete, but **suppresses** any message to the chat channel.
+
+### 3. "Hello" Case
+*   **User:** "Hello"
+*   **Agent:** Outputs text "Hello!"
+*   **System:** Detects text → Marks turn complete → Sends message.
+*   **Result:** A standard chat interaction. No "Task Completed" confetti, just a conversation.

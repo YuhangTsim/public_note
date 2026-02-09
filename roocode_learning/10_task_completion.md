@@ -256,3 +256,21 @@ async notifyParent(status: 'completed' | 'failed') {
 - **Subtask coordination** - Parent tasks notified of child completion
 
 **Version**: Roo-Code v3.39+ (January 2026)
+
+## Chat vs. Task Completion
+
+Roo Code strictly distinguishes between **Chatting** and **Completing a Task**.
+
+### 1. Chatting (The "Hello" Case)
+If the user says "Hello" or asks a clarifying question:
+*   **Tool:** The agent uses `ask_followup_question` (or purely text in some modes).
+*   **UI:** Shows a chat bubble.
+*   **State:** The task remains **Active**. The "Task Completed" UI is NOT triggered.
+
+### 2. Task Completion (The Work Case)
+If the user says "Refactor this file":
+*   **Tool:** The agent MUST use `attempt_completion`.
+*   **UI:** Shows the "Task Completion" interface (Diffs, Cost, Approval Buttons).
+*   **State:** The task transitions to **Waiting for Approval**.
+
+**Key Rule:** The agent is forbidden from using `attempt_completion` just to chat. It must be used *only* when a unit of work is finished and ready for review.
