@@ -11,13 +11,20 @@ This is the mechanism behind the "Todo Continuation Enforcer".
 
 **Logic Flow:**
 1.  **Event**: Agent finishes executing a tool (e.g., `edit` or `bash`).
-2.  **Check**: The hook inspects the current state of the `todowrite` tool.
+2.  **Idle Detection**: The hook checks if the agent session has gone idle (stopped generating).
+3.  **State Check**: It inspects the `todowrite` state.
     - Are there items marked `pending` or `in_progress`?
-3.  **Action**:
-    - If **Yes**: The hook injects a system message: *"You have pending tasks. Proceed to the next item immediately."*
-    - If **No**: It allows the agent to generate a final response.
+4.  **Action**:
+    - If **Yes** (Idle + Pending Tasks): The hook **Wakes Up** the agent.
+    - **Injection**: It injects a system message: *"Wait, you have 2 pending tasks. Continuation enforced. Proceed to the next item."*
+    - If **No**: It allows the agent to rest (or complete).
 
-**Why it matters**: This prevents the "lazy agent" problem where the LLM stops after doing 80% of the work.
+**Why it matters**: This prevents the "lazy agent" problem where the LLM stops after doing 80% of the work. It turns the agent into a self-driving loop that only stops when the plan is fully executed.
+
+### Comparison: OMO vs Roo Code Planning
+*   **OMO**: **Enforced Contract**. If you write it down, you *must* do it. The system won't let you stop.
+*   **Roo Code**: **Project Manager**. A helpful UI list (`update_todo_list`). Passive; relies on the agent to be disciplined.
+*   **OpenClaw**: **Checklist**. Periodic scripts (`HEARTBEAT.md`) for maintenance, not stateful project management.
 
 ### `PreToolUse` Hook: The Validator
 This hook runs *before* a tool is executed.

@@ -1,34 +1,25 @@
-# 11: ToDo and Subtasks
+# 11: ToDo and Planning Systems
 
-**Task Delegation and Hierarchy**
-
----
-
-## Complete Lifecycle
-
-```
-Parent Task
-  ↓
-1. Create ToDo List
-  ↓
-2. Delegate via new_task
-  ↓
-3. Child Task Created
-  ↓
-4. Child Executes
-  ↓
-5. Child Calls attempt_completion
-  ↓
-6. Result Returns to Parent
-  ↓
-7. Parent Continues
-```
+**Task Delegation, Planning, and State Management**
 
 ---
 
-## Step-by-Step
+## 1. The Planning Philosophy: Structured Project Management
 
-### 1. Parent Creates ToDos
+Roo Code handles planning through a combination of **Explicit Tooling**, **UI Visualization**, and **Stateful Checkpoints**. Unlike other systems that might use implicit text lists or aggressive enforcement hooks, Roo Code relies on a cooperative "Project Manager" model.
+
+### Key Components
+1.  **`update_todo_list` Tool**: The primary mechanism for creating and modifying the plan.
+2.  **Tasks UI**: A dedicated side panel that renders the structured todo list.
+3.  **Checkpoints**: Integrated git-based snapshots to save state before major tasks.
+4.  **Subtasks**: Hierarchical task delegation.
+
+---
+
+## 2. The ToDo Lifecycle
+
+### A. Creation & Update
+The agent uses the `update_todo_list` tool to manage the plan.
 
 ```typescript
 {
@@ -36,15 +27,35 @@ Parent Task
   input: {
     todos: [
       { id: "1", content: "Design database schema", status: "pending" },
-      { id: "2", content: "Implement API", status: "pending" }
+      { id: "2", content: "Implement API", status: "in_progress" }
     ]
   }
 }
 ```
 
-### 2. Parent Delegates
+*   **UI Effect**: This updates the React-based "Tasks" panel in the webview.
+*   **Enforcement**: **Passive**. The system does *not* force the agent to update this list. It relies on system prompts to encourage discipline.
+
+### B. Checkpoints (State Management)
+Roo Code tightly couples planning with state management.
+*   **Trigger**: Before starting a complex task (or subtask), the system often captures a **Checkpoint**.
+*   **Mechanism**: Uses `git` to create a temporary snapshot.
+*   **Benefit**: If a plan fails, the user can "Rewind" to the state before that specific todo item was started.
+
+---
+
+## 3. Subtasks (Delegation)
+
+Roo Code supports a recursive task structure.
+
+### Delegation Flow
+1.  **Parent Task**: Decides a specific todo item is complex enough to be its own "Task".
+2.  **Action**: Calls `new_task` (or `startSubtask`).
+3.  **Child Task**: Spawned with its own context and todo list.
+4.  **Completion**: Child calls `attempt_completion`, returning results to the parent.
 
 ```typescript
+// Parent Delegate
 {
   name: "new_task",
   input: {
@@ -54,68 +65,26 @@ Parent Task
 }
 ```
 
-### 3. System Creates Child
-
-```typescript
-// src/core/tools/NewTaskTool.ts
-async execute(input) {
-  const childTask = await provider.createTask({
-    task: input.message,
-    mode: input.mode,
-    parentTask: this.task,
-    initialStatus: "active"
-  })
-  
-  this.task.childTaskId = childTask.taskId
-  this.task.isPaused = true
-  
-  return `Subtask created: ${childTask.taskId}`
-}
+### Hierarchy Visualization
 ```
-
-### 4. Child Completes
-
-```typescript
-// src/core/tools/AttemptCompletionTool.ts
-async execute(input) {
-  const parent = findTaskById(this.task.parentTaskId)
-  
-  parent.apiConversationHistory.push({
-    role: 'user',
-    content: [{
-      type: 'tool_result',
-      tool_use_id: parent.pendingNewTaskToolCallId,
-      content: input.result
-    }]
-  })
-  
-  parent.isPaused = false
-  parent.recursivelyMakeClineRequests()
-}
+Root Task (Active)
+  ├─ [x] Setup Project
+  ├─ [>] Implement Auth (Active Subtask)
+  │       ├─ [x] Design Schema
+  │       └─ [ ] Create API Routes
+  └─ [ ] Deploy
 ```
 
 ---
 
-## Task Hierarchy
+## 4. Comparison with Other Systems
 
-```
-Root Task (parent_abc)
-  ├─ Child Task (child_123) [completed]
-  │   Result: "Schema designed"
-  └─ Child Task (child_456) [active]
-      └─ Sub-child Task (child_789)
-```
+| Feature | Roo Code | Oh-My-OpenCode | OpenClaw |
+| :--- | :--- | :--- | :--- |
+| **Model** | **UI-Driven Project Manager** | **Enforced Contract** | **Periodic Checklist** |
+| **Tool** | `update_todo_list` | `todowrite` | `HEARTBEAT.md` |
+| **Enforcement** | **Passive** (Agent driven) | **Aggressive** (Hook wakes agent) | **None** (Stateless) |
+| **State** | Session + Checkpoints | Session + Hook State | Ephemeral |
+| **Best For** | Collaborative Development | Autonomous Loops | Maintenance Scripts |
 
----
-
-## Source Code
-
-| File | Purpose |
-|------|---------|
-| `src/core/tools/NewTaskTool.ts` | Task delegation |
-| `src/core/tools/AttemptCompletionTool.ts` | Task completion |
-| `src/core/task/Task.ts` | Task orchestration |
-
----
-
-**Version**: Roo-Code v3.39+ (January 2026)
+**Key Takeaway:** Roo Code is best when you want to *see* the plan and *manage* the agent. OMO is best when you want the agent to *manage itself*.
