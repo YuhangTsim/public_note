@@ -9,3 +9,6 @@ Research and documentation on the OpenHands (formerly OpenDevin) architecture.
 3.  **[Agent Implementations](./03_agent_implementations.md)** - CodeActAgent (Function Calling) vs BrowsingAgent (BrowserGym).
 4.  **[The Agent Controller](./04_agent_controller.md)** - The `step()` loop, State Management, and Stuck Detection logic.
 5.  **[Docker Runtime & Sandbox](./05_docker_runtime.md)** - Container lifecycle, Action Execution Server, and Plugins.
+6.  **[Prompt Engineering](./06_prompt_engineering.md)** - Jinja2 templates, Context Injection, and MicroAgents.
+7.  **[Tool System](./07_tool_system.md)** - Action definitions, Function Calling, and LLM mapping.
+8.  **[Observation System](./08_observation_system.md)** - Output formatting, truncation strategies, and feedback loops.
