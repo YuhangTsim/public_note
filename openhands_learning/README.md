@@ -12,3 +12,4 @@ Research and documentation on the OpenHands (formerly OpenDevin) architecture.
 6.  **[Prompt Engineering](./06_prompt_engineering.md)** - Jinja2 templates, Context Injection, and MicroAgents.
 7.  **[Tool System](./07_tool_system.md)** - Action definitions, Function Calling, and LLM mapping.
 8.  **[Observation System](./08_observation_system.md)** - Output formatting, truncation strategies, and feedback loops.
+9.  **[Planning & ToDos](./09_planning_and_todos.md)** - The "Code to Plan" philosophy and lack of structured state.
