@@ -21,8 +21,24 @@ Documentation and analysis of the **Oh My OpenCode** (OMO) project, a sophistica
 
 4. **[08_skill_implementation_deep_dive.md](./08_skill_implementation_deep_dive.md)**
    - Technical breakdown of the skill system.
-   - The 3-Tier MCP Architecture.
-   - Parsing logic and Zod validation.
+   - **5-Tier Discovery**: Remote → Plugin → Managed → Workspace → Extra.
+   - **3-Tier MCP Architecture**: Built-in, Config-based, Skill-embedded.
+   - **Auto-Permission Management**: Automatic `external_directory` and `read` grants.
+   - **Intent-Based Loading**: Hook-driven skill injection via `UserPromptSubmit`.
+   - **Skill Marketplace**: Installation and management.
+
+5. **[09_boulder_pattern.md](./09_boulder_pattern.md)**
+   - **Persistent Task State**: Tasks survive session restarts.
+   - **Atomic File Storage**: With locking for parallel access.
+   - **Ralph Loop**: Verification and enforcement preventing premature completion.
+   - **Enhanced Schema**: `subject`, `activeForm`, `blocks`, `blockedBy` dependencies.
+   - **BackgroundManager**: 1600+ lines of concurrency lifecycle management.
+
+6. **[10_hook_architecture.md](./10_hook_architecture.md)**
+   - **160+ Lifecycle Hooks**: Event-driven agent behavior modification.
+   - **Hook Categories**: UserPromptSubmit, PreToolUse, PostToolUse, Stop, onSummarize.
+   - **Key Hooks**: Todo Continuation Enforcer, Ralph Loop, Babysitter, Skill Loader.
+   - **Self-Healing**: Error loop detection and recovery protocols.
 
 5. **[04_prompt_engineering.md](./04_prompt_engineering.md)**
    - Analysis of `sisyphus-prompt.md`.
@@ -50,6 +66,8 @@ Documentation and analysis of the **Oh My OpenCode** (OMO) project, a sophistica
 - **Orchestration First**: OMO transforms the agent from a "coder" to a "manager" who delegates.
 - **Strict Protocol**: It enforces rigid protocols (e.g., skill justification) to improve reliability.
 - **Persistence**: The "Todo Continuation Enforcer" is the killer feature for long-running tasks.
+- **Boulder Pattern**: Tasks are persistent first-class entities that survive crashes and restarts.
+- **Hook-Driven**: 160+ lifecycle hooks enable sophisticated automation and self-healing.
 - **Compatibility**: It aims to bring Claude Code's best features (MCPs, hooks) to the open-source OpenCode ecosystem.
 
 ## 🔗 Resources

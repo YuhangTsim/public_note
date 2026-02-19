@@ -73,7 +73,7 @@ Comprehensive documentation for **OpenClaw** - a personal AI assistant platform 
 
 See [openclaw_learning/README.md](./openclaw_learning/README.md) for complete documentation index.
 
-### [oh_my_opencode_learning/](./oh_my_opencode_learning/)
+### [oh_my_opencode_learning/](./opencode_learning/oh_my_opencode_learning/)
 Deep dive into **Oh My OpenCode** (OMO), a "battery-included" orchestration suite for OpenCode that introduces the Sisyphus agent.
 
 **Topics covered:**
@@ -82,13 +82,17 @@ Deep dive into **Oh My OpenCode** (OMO), a "battery-included" orchestration suit
 - Mandatory Category/Skill delegation protocols
 - Prompt engineering analysis of `sisyphus-prompt.md`
 - "Todo Continuation Enforcer" for persistence
+- Boulder pattern for persistent multi-step plans
+- 160+ lifecycle hook architecture
 
 **Key documents:**
-- [01_overview.md](./oh_my_opencode_learning/01_overview.md) - Core philosophy and features
-- [02_architecture_and_agents.md](./oh_my_opencode_learning/02_architecture_and_agents.md) - Agent hierarchy and delegation
-- [04_prompt_engineering.md](./oh_my_opencode_learning/04_prompt_engineering.md) - Analysis of the Sisyphus system prompt
+- [01_overview.md](./opencode_learning/oh_my_opencode_learning/01_overview.md) - Core philosophy and features
+- [02_architecture_and_agents.md](./opencode_learning/oh_my_opencode_learning/02_architecture_and_agents.md) - Agent hierarchy and delegation
+- [04_prompt_engineering.md](./opencode_learning/oh_my_opencode_learning/04_prompt_engineering.md) - Analysis of the Sisyphus system prompt
+- [09_boulder_pattern.md](./opencode_learning/oh_my_opencode_learning/09_boulder_pattern.md) - Persistent task state and continuation
+- [10_hook_architecture.md](./opencode_learning/oh_my_opencode_learning/10_hook_architecture.md) - 160+ hook system deep dive
 
-See [oh_my_opencode_learning/README.md](./oh_my_opencode_learning/README.md) for detailed index.
+See [oh_my_opencode_learning/README.md](./opencode_learning/oh_my_opencode_learning/README.md) for detailed index.
 
 ### [coding_agent_research/](./coding_agent_research/)
 Research on context selection and management methodologies in open-source coding agents.
@@ -224,5 +228,16 @@ Keep documentation accurate, clear, and well-referenced.
 ---
 
 **Created**: January 2026  
-**Last Updated**: January 26, 2026  
+**Last Updated**: February 17, 2026  
 **Focus**: AI coding agent architecture, protocols, context management, and multi-channel platforms
+
+---
+
+## 📅 Recent Updates
+
+### February 2026
+- **New**: [OMOS Boulder Pattern](./opencode_learning/oh_my_opencode_learning/09_boulder_pattern.md) - Persistent task state and Ralph Loop enforcement
+- **New**: [OMOS Hook Architecture](./opencode_learning/oh_my_opencode_learning/10_hook_architecture.md) - Deep dive into 160+ lifecycle hooks
+- **Enhanced**: [OMOS Skills System](./opencode_learning/oh_my_opencode_learning/08_skill_implementation_deep_dive.md) - 5-tier discovery, auto-permissions, intent-based loading
+- **Fixed**: Path corrections in main README for oh_my_opencode_learning
+- **Removed**: Empty latte_learning directory
