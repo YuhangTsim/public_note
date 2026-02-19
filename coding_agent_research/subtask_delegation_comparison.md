@@ -1,21 +1,21 @@
 # Subtasks & Delegation Systems
 
-**Comparative Analysis: Roo Code vs. Oh-My-OpenCode vs. OpenClaw**
+**Comparative Analysis: Roo Code vs. Oh-My-OpenCode vs. Oh-My-OpenCode-Slim vs. OpenClaw**
 
-This document compares how these three systems handle **Multi-Agent Orchestration**, **Subtasks**, and **Parallelism**.
+This document compares how these four systems handle **Multi-Agent Orchestration**, **Subtasks**, and **Parallelism**.
 
 ---
 
 ## 1. High-Level Comparison
 
-| Feature | **Roo Code** | **Oh-My-OpenCode (Sisyphus)** | **OpenClaw** |
-| :--- | :--- | :--- | :--- |
-| **Model** | **Recursive Delegation** | **Async Orchestration** | **Job Spawning** |
-| **Tool** | `new_task` | `delegate_task` | `sessions_spawn` |
-| **Concurrency** | **Serial** (Parent pauses) | **Parallel** (Background Async) | **Parallel** (Non-blocking) |
-| **Context** | Child inherits workspace | Isolated (Prompt-only) | Isolated (Task-only) |
-| **Return Flow** | Synthetic Message injection | Notification + Polling | Announcement to Chat |
-| **Philosophy** | "Break it down, solve one by one." | "Delegate research, keep coding." | "Start a background job." |
+| Feature | **Roo Code** | **Oh-My-OpenCode (Sisyphus)** | **Oh-My-OpenCode-Slim** | **OpenClaw** |
+| :--- | :--- | :--- | :--- | :--- |
+| **Model** | **Recursive Delegation** | **Async Orchestration** | **Lightweight Async** | **Job Spawning** |
+| **Tool** | `new_task` | `delegate_task` | `@agent` mention / tools | `sessions_spawn` |
+| **Concurrency** | **Serial** (Parent pauses) | **Parallel** (Background Async) | **Parallel** (Event-driven) | **Parallel** (Non-blocking) |
+| **Context** | Child inherits workspace | Isolated (Prompt-only) | Isolated (Prompt-only) | Isolated (Task-only) |
+| **Return Flow** | Synthetic Message injection | Notification + Polling | Notification + Event-driven | Announcement to Chat |
+| **Philosophy** | "Break it down, solve one by one." | "Delegate research, keep coding." | "Lightweight multi-agent powerhouse." | "Start a background job." |
 
 ---
 
@@ -45,7 +45,21 @@ OMO uses a **Breadth-First / Parallel** approach optimized for throughput.
 *   **Pros:** High efficiency. Can run 5+ research agents while coding.
 *   **Cons:** Complex context management. Sisyphus must manage the state of multiple pending tasks.
 
-## 4. OpenClaw: The Job Spawner
+## 4. Oh-My-OpenCode-Slim: The Streamlined Orchestrator
+
+Oh-My-OpenCode-Slim (OMOS) is a **lightweight fork** of OMO, optimized for simplicity and performance.
+
+*   **Mechanism:** `@agent` mentions with event-driven `background_task` tools.
+*   **Flow:**
+    1.  **Launch:** Orchestrator spawns sub-agents (Explorer, Librarian, Oracle, Designer, Fixer) via `@agent` mentions.
+    2.  **Continue:** Orchestrator **immediately** continues. Tasks run in background sessions with event-driven completion detection.
+    3.  **Notify:** When a sub-agent finishes, the orchestrator receives a system notification via `session.status` events.
+    4.  **Retrieve:** Orchestrator calls `background_output(task_id)` to read results and integrate them.
+*   **Agent Pantheon:** 6 specialized agents (Orchestrator + 5 subagents) with distinct roles and temperature settings.
+*   **Pros:** Same parallel efficiency as OMO but with reduced complexity. Uses OpenCode SDK native agent system.
+*   **Cons:** Requires OpenCode SDK. Less customizable than full OMO for advanced use cases.
+
+## 5. OpenClaw: The Job Spawner
 
 OpenClaw uses a **Worker Pool** approach.
 
@@ -63,4 +77,5 @@ OpenClaw uses a **Worker Pool** approach.
 
 *   **Complex Problem Solving?** Use **Roo Code** (Recursive breakdown).
 *   **High-Volume Coding?** Use **Oh-My-OpenCode** (Parallel research).
+*   **Lightweight Multi-Agent?** Use **Oh-My-OpenCode-Slim** (Streamlined parallel orchestration).
 *   **Background Maintenance?** Use **OpenClaw** (Fire-and-forget jobs).
