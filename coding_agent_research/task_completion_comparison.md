@@ -175,6 +175,122 @@ Agent generates response
 - **Hook-based enforcement** - Invisible to agent until triggered
 - **Ultrawork mode** - Stricter criteria for `/ulw` commands
 
+### Example: Refactoring a React Component
+
+**Scenario:** Agent is refactoring a Button component with 3 TODOs.
+
+**Initial TODO List:**
+```typescript
+// Agent creates TODOs via todowrite
+todowrite({
+  todos: [
+    { id: "1", content: "Extract Button props interface", status: "completed" },
+    { id: "2", content: "Update Button.test.tsx with new props", status: "in_progress" },
+    { id: "3", content: "Run linter and fix any issues", status: "pending" }
+  ]
+})
+```
+
+**Attempt 1: Agent Tries to Finish Early**
+```
+Agent: "I've refactored the Button component. The props interface is now 
+        extracted and the component is cleaner. Task complete!"
+        
+        [Model sends finishReason: "stop"]
+                │
+                ▼
+        Ralph Loop Hook intercepts:
+        - ❌ TODO #2 still "in_progress"
+        - ❌ TODO #3 still "pending"
+        - ❌ No test results in context
+        - ❌ Linter not run
+                │
+                ▼
+        Text Modified:
+        "I've refactored the Button component... Task complete!
+        
+        [SYSTEM REMINDER - RALPH LOOP]
+        ⏳ You have 2 incomplete TODO items:
+           - [ ] Update Button.test.tsx with new props (in_progress)
+           - [ ] Run linter and fix any issues (pending)
+           
+        🔴 You MUST complete all TODOs before stopping.
+        📝 Current diagnostics: NOT CHECKED
+        🧪 Current test status: NOT CHECKED
+        
+        Continue working on the next pending item."
+                │
+                ▼
+        [Loop continues - Agent sees reminder in context]
+```
+
+**Attempt 2: Agent Continues Work**
+```
+Agent: "Let me update the tests and run the linter."
+
+[Agent runs tests - 2 fail, fixes them, tests pass]
+[Agent runs linter - 1 error found, fixes it]
+
+Agent marks TODOs complete via todowrite:
+- TODO #2 → "completed" ✅
+- TODO #3 → "completed" ✅
+
+Agent: "All TODOs are now complete. Tests pass and linter is clean. 
+        The refactoring is done."
+        
+        [Model sends finishReason: "stop"]
+                │
+                ▼
+        Ralph Loop Hook checks:
+        - ✅ All TODOs completed
+        - ✅ lsp_diagnostics returns []
+        - ✅ npm test passed (mentioned in context)
+        - ✅ <promise>DONE</promise> tag present
+                │
+                ▼
+        [No text modification - Hook allows completion]
+                │
+                ▼
+        SessionStatus.set("idle")
+        User sees final result
+```
+
+### Example: Chat vs. Task Mode
+
+**Chat Mode (No TODOs Created):**
+```
+User: "Hello, how are you?"
+
+Agent: "Hello! I'm ready to help you code. What would you like to work on?"
+        
+        [No TODOs exist]
+                │
+                ▼
+        Ralph Loop: "No TODOs found - allowing natural conversation end"
+                │
+                ▼
+        [Completion allowed - this is chat, not a task]
+```
+
+**Task Mode (TODOs Created):**
+```
+User: "Refactor the auth module"
+
+Agent: "I'll refactor the auth module. Let me start by creating a plan."
+
+[Agent creates 4 TODOs via todowrite]
+
+Agent: "Alright, I've analyzed the code. Starting the refactoring..."
+        
+        [TODOs exist]
+                │
+                ▼
+        Ralph Loop: "TODOs detected - enforcement ACTIVE"
+                │
+                ▼
+        [Any attempt to finish before TODOs complete = BLOCKED]
+```
+
 ---
 
 ## 4. OMOS: Pantheon Verification
@@ -234,6 +350,140 @@ Unlike OMO, OMOS shows completion status in **tmux panes**:
 - **Tmux real-time view** - Visual confirmation of completion
 - **Same Ralph enforcement** - Inherited from OMO
 - **Streamlined** - Fewer hooks, faster execution
+
+### Example: Multi-Agent Feature Implementation
+
+**Scenario:** Adding a new API endpoint with database migration.
+
+**Orchestrator Creates Plan:**
+```typescript
+// Orchestrator delegates to Pantheon
+todowrite({
+  todos: [
+    { id: "1", content: "@explorer: Find existing API patterns", status: "pending" },
+    { id: "2", content: "@librarian: Research Prisma migration syntax", status: "pending" },
+    { id: "3", content: "@fixer: Implement endpoint handler", status: "pending" },
+    { id: "4", content: "@fixer: Create database migration", status: "pending" },
+    { id: "5", content: "Run tests and verify", status: "pending" }
+  ]
+})
+```
+
+**Tmux Session Layout:**
+```
+┌─────────────────────────────────────┬─────────────────────────────────────┐
+│                                     │                                     │
+│  Main Session (@orchestrator)       │  @explorer                          │
+│  ─────────────────────────          │  ─────────────                      │
+│  Status: DELEGATING                 │  Status: ✅ DONE                    │
+│                                     │  Found 3 API pattern files          │
+│  Active Tasks:                      │  Pattern: /src/api/*route.ts        │
+│  - @explorer: DONE ✅               │                                     │
+│  - @librarian: RUNNING ⏳           │                                     │
+│  - @fixer: WAITING ⏸️               │                                     │
+│                                     │                                     │
+├─────────────────────────────────────┼─────────────────────────────────────┤
+│                                     │                                     │
+│  @librarian                         │  @fixer (STANDBY)                   │
+│  ──────────                         │  ────────────────                   │
+│  Status: ⏳ FETCHING                │  Status: ⏸️ WAITING                 │
+│  Source: Context7                   │  Queue: 2 tasks                     │
+│  Query: Prisma migration create     │  - Implement endpoint               │
+│                                     │  - Create migration                 │
+│                                     │                                     │
+└─────────────────────────────────────┴─────────────────────────────────────┘
+```
+
+**Fixer Tries to Complete Early (After Task 3 Only):**
+```
+@fixer completes endpoint implementation:
+
+@fixer: "I've implemented the API endpoint at /src/api/users/route.ts.
+          The handler supports GET and POST methods with proper validation."
+          
+          [Attempts to signal completion]
+                  │
+                  ▼
+          Ralph Loop Hook (runs on orchestrator):
+          - ❌ TODO #4 still pending (migration not created)
+          - ❌ TODO #5 not started (tests not run)
+          - ❌ @fixer doesn't mark work as "completed" - only "in_progress"
+                  │
+                  ▼
+          Tmux @fixer pane updates:
+          ┌─────────────────────────────────────┐
+          │  @fixer                             │
+          │  ───────                            │
+          │  Status: ⚠️ REMINDER INJECTED       │
+          │                                     │
+          │  [SYSTEM] Complete migration task   │
+          │  before finishing.                  │
+          │                                     │
+          │  Pending: TODO #4                   │
+          └─────────────────────────────────────┘
+                  │
+                  ▼
+          @fixer continues to migration task...
+```
+
+**Final Completion (All Tasks Done):**
+```
+@fixer: "Database migration created at /prisma/migrations/20240219_add_user_api/.
+          Tests pass: 12/12 ✅
+          Linter: Clean ✅
+          All TODOs marked complete."
+          
+          [Orchestrator reviews via Ralph Loop]
+                  │
+                  ▼
+          Checks:
+          - ✅ All 5 TODOs completed
+          - ✅ @explorer, @librarian, @fixer all confirmed
+          - ✅ Test output shows 12/12 passed
+          - ✅ LSP diagnostics: 0 errors
+          - ✅ <promise>DONE</promise> present
+                  │
+                  ▼
+          Orchestrator confirms completion
+                  │
+                  ▼
+          Tmux panes auto-close (except main)
+          SessionStatus.set("idle")
+```
+
+### Example: Parallel Task with Verification Failure
+
+**Scenario:** One of two parallel tasks fails validation.
+
+```
+Orchestrator spawns 2 background tasks:
+┌─────────────────────────────┬─────────────────────────────┐
+│   @fixer-task-1             │   @fixer-task-2             │
+│   Update auth middleware    │   Update user service       │
+│                             │                             │
+│   ✅ Code written           │   ✅ Code written           │
+│   ✅ Tests pass             │   ❌ Tests FAIL (2/5)       │
+│   ✅ Linter clean           │   ✅ Linter clean           │
+│                             │                             │
+│   [Waiting for other]       │   [Trying to complete]      │
+└─────────────────────────────┴─────────────────────────────┘
+         │                               │
+         └───────────────┬───────────────┘
+                         ▼
+              Ralph Loop on Orchestrator:
+              - @fixer-task-1: All checks pass ✅
+              - @fixer-task-2: Tests failing ❌
+              
+              Result: BLOCK completion
+              
+              Tmux shows:
+              @fixer-task-2: "⚠️ Tests failing - fix before completing"
+              
+              @fixer-task-2 must:
+              1. Fix failing tests
+              2. Re-run verification
+              3. Then completion allowed
+```
 
 ---
 
