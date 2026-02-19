@@ -1,16 +1,18 @@
-# OpenCode vs Oh-My-OpenCode: Architecture Comparison
+# OpenCode vs Oh-My-OpenCode vs Oh-My-OpenCode-Slim: Architecture Comparison
 
-This document provides a comprehensive comparison between the base OpenCode architecture and the oh-my-opencode plugin enhancement layer.
+This document provides a comprehensive comparison between the base OpenCode architecture, the oh-my-opencode (OMO) plugin enhancement layer, and the oh-my-opencode-slim (OMOS) lightweight fork.
 
 ## Executive Summary
 
-| Aspect            | OpenCode (Base)                  | Oh-My-OpenCode (Plugin)               |
-| ----------------- | -------------------------------- | ------------------------------------- |
-| **Philosophy**    | Minimal, extensible foundation   | "Batteries included" agent harness    |
-| **Target User**   | Developers who want full control | Users who want immediate productivity |
-| **Agent Model**   | 2 primary + 2 subagents          | 7+ specialized agents with roles      |
-| **Tools**         | Core file/code operations        | LSP, AST-grep, background tasks, MCPs |
-| **Configuration** | Manual setup required            | Works out of the box                  |
+| Aspect            | OpenCode (Base)                  | Oh-My-OpenCode (OMO)                  | Oh-My-OpenCode-Slim (OMOS)            |
+| ----------------- | -------------------------------- | ------------------------------------- | ------------------------------------- |
+| **Philosophy**    | Minimal, extensible foundation   | "Batteries included" agent harness    | "Strategic delegation & speed"        |
+| **Target User**   | Developers who want full control | Users who want immediate productivity | Users who want lean multi-agent power |
+| **Agent Model**   | 2 primary + 2 subagents          | 7+ specialized agents (Sisyphus team) | 6 core agents (The Pantheon)          |
+| **Tools**         | Core file/code operations        | LSP, AST-grep, background tasks, MCPs | LSP, AST-grep, tmux, background tasks |
+| **Configuration** | Manual setup required            | Works out of the box                  | CLI installer + dynamic model engine  |
+| **Monitoring**    | Standard logs                    | Background tasks                      | **Tmux integration**                  |
+| **Theme**         | Minimal                          | Greek Mythology (Sisyphus)            | The Pantheon (6 Divine Beings)        |
 
 ---
 
@@ -525,6 +527,60 @@ This document provides a comprehensive comparison between the base OpenCode arch
 
 ---
 
+## Oh-My-OpenCode-Slim (OMOS) Comparison
+
+### Core Differences from OMO
+
+| Feature | Oh-My-OpenCode (OMO) | Oh-My-OpenCode-Slim (OMOS) |
+| ------- | --------------------- | --------------------------- |
+| **Size** | Full-featured (10+ agents, 160+ hooks) | Lightweight (6 agents, essential hooks) |
+| **Theme** | Sisyphus (The Ultraworker) | The Pantheon (6 Divine Beings) |
+| **Orchestrator** | Sisyphus persona | Orchestrator (Order from chaos) |
+| **New Agent** | - | **Fixer**: Fast, parallel implementation specialist |
+| **Installation** | Plugin-based | CLI TUI installer (`bunx oh-my-opencode-slim install`) |
+| **Monitoring** | Background tasks | **Tmux panes** for real-time visibility |
+| **Skills** | Complex 5-tier system | Streamlined |
+| **Model Selection** | Static mapping | Dynamic with external signals (Artificial Analysis, OpenRouter) |
+
+### The Pantheon (OMOS Agents)
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    OMOS: THE PANTHEON ARCHITECTURE                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ┌─────────────────────────────────────────────────────────────────┐  │
+│   │                    ORCHESTRATOR (Master)                        │  │
+│   │              "Forged in the void of complexity"                 │  │
+│   │                    Strategy & Delegation                        │  │
+│   └──────────┬──────────────────────────────────────────────────────┘  │
+│              │                                                          │
+│              │ Delegates                                                 │
+│              ▼                                                          │
+│   ┌──────────┬──────────┬──────────┬──────────┬──────────┐             │
+│   │          │          │          │          │          │             │
+│   ▼          ▼          ▼          ▼          ▼          ▼             │
+│ ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐                      │
+│ │Explorer│ │Librarian│ │ Oracle │ │Designer│ │ Fixer  │                      │
+│ │ (Fast) │ │(Research│ │(High-IQ│ │ (UI/UX)│ │(Execute│                      │
+│ │"Wind"  │ │"Weaver"│ │"Voice" │ │"Beauty"│ │"Final" │                      │
+│ └──────┘  └──────┘  └──────┘  └──────┘  └──────┘                      │
+│                                                                         │
+│   Workflow: Understand → Delegate → Parallelize → Execute → Verify      │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### OMOS Key Features
+
+1. **Tmux Integration**: Spawns panes for background tasks, providing "mission control" visibility
+2. **Dynamic Model Engine**: Auto-discovers models and ranks them via external signals
+3. **Cartography Skill**: Repository mapping and codemap generation
+4. **Parallel Execution**: Background tasks run simultaneously with tmux visualization
+5. **Streamlined Footprint**: Essential functionality without bloat
+
+---
+
 ## Key Differentiators Summary
 
 ### What Oh-My-OpenCode Adds
@@ -543,17 +599,30 @@ This document provides a comprehensive comparison between the base OpenCode arch
 | **Compat** | Claude Code layer         | Existing configs work              |
 | **UX**     | Keyword activation        | "ultrawork" triggers everything    |
 
+### What OMOS Adds Over OMO
+
+| Category   | Feature                   | Benefit                            |
+| ---------- | ------------------------- | ---------------------------------- |
+| **UX**     | CLI TUI installer         | One-command setup                  |
+| **Agents** | Fixer agent               | Fast parallel implementation       |
+| **Monitor**| Tmux integration          | Real-time visual tracking          |
+| **Models** | Dynamic scoring           | Auto-optimized model selection     |
+| **Size**   | Lightweight               | Faster load, less overhead         |
+
 ### When to Use Each
 
-| Use Case                          | Recommendation |
-| --------------------------------- | -------------- |
-| Full control over configuration   | OpenCode base  |
-| Learning/understanding the system | OpenCode base  |
-| Maximum productivity immediately  | Oh-My-OpenCode |
-| Complex multi-agent workflows     | Oh-My-OpenCode |
-| Frontend development              | Oh-My-OpenCode |
-| Large codebase refactoring        | Oh-My-OpenCode |
-| Coming from Claude Code           | Oh-My-OpenCode |
+| Use Case                          | Recommendation      |
+| --------------------------------- | ------------------- |
+| Full control over configuration   | OpenCode base       |
+| Learning/understanding the system | OpenCode base       |
+| Maximum productivity immediately  | Oh-My-OpenCode      |
+| Complex multi-agent workflows     | Oh-My-OpenCode      |
+| Frontend development              | Oh-My-OpenCode      |
+| Large codebase refactoring        | Oh-My-OpenCode      |
+| Coming from Claude Code           | Oh-My-OpenCode      |
+| Speed and lean execution          | **OMOS**            |
+| Visual monitoring (tmux)          | **OMOS**            |
+| Dynamic model optimization        | **OMOS**            |
 
 ---
 
