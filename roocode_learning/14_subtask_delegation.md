@@ -38,4 +38,4 @@ Roo Code implements delegation as a **Stack**.
 
 ## Comparison with Async Systems
 
-Unlike OMO (which runs in background), Roo Code's subtasks are **Modal**. You cannot interact with the parent until the child is done (or cancelled). This aligns with its "Co-Pilot" philosophy: one driver, one navigator, one focus at a time.
+Unlike OMO and oh-my-opencode-slim (which run in background), Roo Code's subtasks are **Modal**. You cannot interact with the parent until the child is done (or cancelled). This aligns with its "Co-Pilot" philosophy: one driver, one navigator, one focus at a time.
